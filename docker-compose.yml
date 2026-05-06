@@ -1,0 +1,57 @@
+services:
+  trainer-db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: trainer
+      POSTGRES_USER: trainer_user
+      POSTGRES_PASSWORD: trainer_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - trainer_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U trainer_user -d trainer"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  sandbox-db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sandbox
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sandbox_pass
+    ports:
+      - "5434:5432"
+    volumes:
+      - sandbox_data:/var/lib/postgresql/data
+      - ./docker/sandbox-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sandbox"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      TRAINER_DB_URL: postgresql+asyncpg://trainer_user:trainer_pass@trainer-db:5432/trainer
+      SANDBOX_DB_URL: postgresql+asyncpg://postgres:sandbox_pass@sandbox-db:5432/sandbox
+      SANDBOX_USER_DSN: postgresql://sandbox_user:sandbox_user_pass@sandbox-db:5432/sandbox
+    volumes:
+      - ./tasks_data:/tasks_data
+      - ./frontend/static:/frontend/static:ro
+    depends_on:
+      trainer-db:
+        condition: service_healthy
+      sandbox-db:
+        condition: service_healthy
+
+volumes:
+  trainer_data:
+  sandbox_data:

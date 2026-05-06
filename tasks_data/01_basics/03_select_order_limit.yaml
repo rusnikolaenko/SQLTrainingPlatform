@@ -1,0 +1,41 @@
+id: 3
+topic: basics
+difficulty: 2
+title: "Топ-3 сотрудника по зарплате"
+description: |
+  В таблице employees хранятся данные о сотрудниках.
+
+  Структура таблицы:
+  - id (INTEGER) — уникальный идентификатор
+  - name (TEXT) — имя сотрудника
+  - department (TEXT) — отдел
+  - salary (NUMERIC) — зарплата
+
+  Выбери name и salary всех сотрудников, отсортировав по убыванию зарплаты.
+  Верни только первые 3 записи.
+  Колонки результата: name, salary.
+schema_setup: |
+  CREATE TABLE employees (
+      id INTEGER,
+      name TEXT,
+      department TEXT,
+      salary NUMERIC
+  );
+  INSERT INTO employees VALUES
+      (1, 'Иван Петров', 'Разработка', 90000),
+      (2, 'Мария Сидорова', 'Маркетинг', 75000),
+      (3, 'Алексей Козлов', 'Разработка', 120000),
+      (4, 'Ольга Новикова', 'HR', 65000),
+      (5, 'Дмитрий Морозов', 'Маркетинг', 80000);
+solution: |
+  SELECT name, salary FROM employees ORDER BY salary DESC LIMIT 3;
+check:
+  ordered: true
+  columns_strict: true
+hints:
+  - "Используй ORDER BY для сортировки. DESC — по убыванию, ASC — по возрастанию"
+  - "LIMIT ограничивает количество возвращаемых строк"
+theory: |
+  ORDER BY сортирует результат по указанным колонкам.
+  LIMIT ограничивает количество строк в результате.
+  Синтаксис: SELECT ... FROM ... ORDER BY <колонка> DESC LIMIT <n>;

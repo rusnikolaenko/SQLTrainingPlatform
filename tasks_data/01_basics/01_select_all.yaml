@@ -1,0 +1,39 @@
+id: 1
+topic: basics
+difficulty: 1
+title: "Выбрать всех сотрудников"
+description: |
+  В таблице employees хранятся данные о сотрудниках компании.
+
+  Структура таблицы:
+  - id (INTEGER) — уникальный идентификатор
+  - name (TEXT) — имя сотрудника
+  - department (TEXT) — отдел
+  - salary (NUMERIC) — зарплата
+
+  Выбери все строки и все колонки из таблицы employees.
+schema_setup: |
+  CREATE TABLE employees (
+      id INTEGER,
+      name TEXT,
+      department TEXT,
+      salary NUMERIC
+  );
+  INSERT INTO employees VALUES
+      (1, 'Иван Петров', 'Разработка', 90000),
+      (2, 'Мария Сидорова', 'Маркетинг', 75000),
+      (3, 'Алексей Козлов', 'Разработка', 120000),
+      (4, 'Ольга Новикова', 'HR', 65000),
+      (5, 'Дмитрий Морозов', 'Маркетинг', 80000);
+solution: |
+  SELECT * FROM employees;
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Используй оператор SELECT для выборки данных"
+  - "Символ * означает «все колонки»"
+theory: |
+  SELECT — основная команда для чтения данных из таблицы.
+  Синтаксис: SELECT <колонки> FROM <таблица>;
+  Символ * выбирает все колонки таблицы.
