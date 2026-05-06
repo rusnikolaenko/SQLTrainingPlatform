@@ -1,0 +1,121 @@
+id: 4
+topic: basics
+difficulty: 2
+title: "Молодые персонажи Вестероса"
+description: |
+  Используй таблицу characters.
+
+  Структура таблицы:
+    id, name, house_id, title, age, is_alive
+
+  Задача: выбери name и age всех персонажей, чей возраст строго меньше 20 лет.
+  Порядок строк не важен.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'Старк',      'Зима близко',                         'Север',            true),
+      (2, 'Ланнистер',  'Слышишь мой рёв',                     'Запад',            true),
+      (3, 'Таргариен',  'Огонь и кровь',                       'Драконий Камень',  true),
+      (4, 'Баратеон',   'Наша — ярость',                       'Штормовые Земли',  true),
+      (5, 'Тирелл',     'Растём в силе',                       'Простор',          true),
+      (6, 'Мартелл',    'Несломленный, непогнутый, несогнувшийся', 'Дорн',         true),
+      (7, 'Аррен',      'Высоко, как честь',                   'Долина Аррен',     true),
+      (8, 'Болтон',     'Наш нож всегда острее',               'Север',            false);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд',            35, false),
+      (2,  'Джон Сноу',           1, 'Лорд',            17, true),
+      (3,  'Арья Старк',          1, 'Леди',            11, true),
+      (4,  'Санса Старк',         1, 'Леди',            14, true),
+      (5,  'Тирион Ланнистер',    2, 'Лорд',            32, true),
+      (6,  'Серсея Ланнистер',    2, 'Королева',        34, true),
+      (7,  'Джейме Ланнистер',    2, 'Сир',             36, true),
+      (8,  'Дейенерис Таргариен', 3, 'Королева',        16, true),
+      (9,  'Визерис Таргариен',   3, 'Принц',           22, false),
+      (10, 'Джоффри Баратеон',    4, 'Король',          13, false),
+      (11, 'Станнис Баратеон',    4, 'Лорд',            48, false),
+      (12, 'Маргери Тирелл',      5, 'Королева',        15, false),
+      (13, 'Оберин Мартелл',      6, 'Принц',           42, false),
+      (14, 'Лиза Аррен',          7, 'Леди',            33, false),
+      (15, 'Рамси Болтон',        8, 'Лорд',            25, false);
+solution: SELECT name, age FROM characters WHERE age < 20
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Используй WHERE с оператором сравнения"
+  - "Оператор «строго меньше» записывается как < (без знака равенства)"
+  - "Синтаксис: SELECT name, age FROM characters WHERE age < 20"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">WHERE с операторами сравнения</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    В условии WHERE можно использовать числовые сравнения:
+  </p>
+  <table style="border-collapse:collapse;margin:0 0 12px;font-family:monospace;font-size:13px;width:100%">
+    <tr style="background:#45475a">
+      <th style="padding:6px 12px;color:#89b4fa;text-align:left">Оператор</th>
+      <th style="padding:6px 12px;color:#89b4fa;text-align:left">Смысл</th>
+      <th style="padding:6px 12px;color:#89b4fa;text-align:left">Пример</th>
+    </tr>
+    <tr style="background:#313244">
+      <td style="padding:5px 12px;color:#a6e3a1">=</td>
+      <td style="padding:5px 12px;color:#cdd6f4">равно</td>
+      <td style="padding:5px 12px;color:#cdd6f4">age = 17</td>
+    </tr>
+    <tr style="background:#2a2a3e">
+      <td style="padding:5px 12px;color:#a6e3a1">&lt;</td>
+      <td style="padding:5px 12px;color:#cdd6f4">меньше</td>
+      <td style="padding:5px 12px;color:#cdd6f4">age &lt; 20</td>
+    </tr>
+    <tr style="background:#313244">
+      <td style="padding:5px 12px;color:#a6e3a1">&gt;</td>
+      <td style="padding:5px 12px;color:#cdd6f4">больше</td>
+      <td style="padding:5px 12px;color:#cdd6f4">age &gt; 30</td>
+    </tr>
+    <tr style="background:#2a2a3e">
+      <td style="padding:5px 12px;color:#a6e3a1">&lt;=</td>
+      <td style="padding:5px 12px;color:#cdd6f4">не больше</td>
+      <td style="padding:5px 12px;color:#cdd6f4">age &lt;= 18</td>
+    </tr>
+    <tr style="background:#313244">
+      <td style="padding:5px 12px;color:#a6e3a1">&lt;&gt;</td>
+      <td style="padding:5px 12px;color:#cdd6f4">не равно</td>
+      <td style="padding:5px 12px;color:#cdd6f4">age &lt;&gt; 13</td>
+    </tr>
+  </table>
+  <svg viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="80" rx="6" fill="#1e1e2e"/>
+    <text x="200" y="20" text-anchor="middle" fill="#89b4fa" font-size="10" font-family="monospace">Шкала возраста персонажей</text>
+    <line x1="20" y1="40" x2="380" y2="40" stroke="#45475a" stroke-width="2"/>
+    <line x1="20" y1="34" x2="20" y2="46" stroke="#45475a" stroke-width="2"/>
+    <line x1="380" y1="34" x2="380" y2="46" stroke="#45475a" stroke-width="2"/>
+    <rect x="20" y="30" width="130" height="20" fill="#a6e3a1" opacity="0.3" rx="2"/>
+    <line x1="150" y1="24" x2="150" y2="56" stroke="#f38ba8" stroke-width="2" stroke-dasharray="4,2"/>
+    <text x="150" y="65" text-anchor="middle" fill="#f38ba8" font-size="9" font-family="monospace">20 лет</text>
+    <text x="85" y="55" text-anchor="middle" fill="#a6e3a1" font-size="8" font-family="monospace">age &lt; 20 ✓</text>
+    <text x="265" y="55" text-anchor="middle" fill="#585b70" font-size="8" font-family="monospace">age &gt;= 20 ✗</text>
+    <text x="50" y="38" fill="#a6e3a1" font-size="8" font-family="monospace">11</text>
+    <text x="75" y="38" fill="#a6e3a1" font-size="8" font-family="monospace">13</text>
+    <text x="96" y="38" fill="#a6e3a1" font-size="8" font-family="monospace">14</text>
+    <text x="114" y="38" fill="#a6e3a1" font-size="8" font-family="monospace">15</text>
+    <text x="132" y="38" fill="#a6e3a1" font-size="8" font-family="monospace">16</text>
+    <text x="142" y="38" fill="#a6e3a1" font-size="8" font-family="monospace">17</text>
+    <text x="170" y="38" fill="#585b70" font-size="8" font-family="monospace">22 25 32...</text>
+  </svg>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Запомни:</strong>
+    <span style="color:#cdd6f4"> <code>&lt;</code> — строго меньше (20 не включается). Если нужно включить границу — используй <code>&lt;=</code>.</span>
+  </div>

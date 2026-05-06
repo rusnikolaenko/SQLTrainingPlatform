@@ -1,0 +1,40 @@
+id: 15
+topic: joins
+difficulty: 3
+title: "Битвы с названиями атакующих и защищающихся домов"
+description: |
+  В таблице battles хранятся только id домов: attacker_house_id и defender_house_id.
+
+  Присоедини таблицу houses дважды, чтобы вывести названия атакующего и защищающегося дома.
+  Колонки результата: battle_name, attacker_name, defender_name.
+schema_setup: |
+  CREATE TABLE houses (id INTEGER PRIMARY KEY, name TEXT, words TEXT, region TEXT, is_great BOOLEAN);
+  CREATE TABLE characters (id INTEGER PRIMARY KEY, name TEXT, house_id INTEGER REFERENCES houses(id), title TEXT, age INTEGER, is_alive BOOLEAN);
+  CREATE TABLE battles (id INTEGER PRIMARY KEY, name TEXT, year INTEGER, attacker_house_id INTEGER REFERENCES houses(id), defender_house_id INTEGER REFERENCES houses(id), winner_house_id INTEGER REFERENCES houses(id), location TEXT);
+  CREATE TABLE marriages (id INTEGER PRIMARY KEY, character1_id INTEGER REFERENCES characters(id), character2_id INTEGER REFERENCES characters(id), year INTEGER, location TEXT);
+  INSERT INTO houses VALUES (1,'Дом Старков','Зима близко','Север',TRUE),(2,'Дом Ланнистеров','Услышь мой рёв','Западные земли',TRUE),(3,'Дом Таргариенов','Пламя и кровь','Драконий Камень',TRUE),(4,'Дом Баратеонов','Нам ярость','Штормовые земли',TRUE),(5,'Дом Грейджоев','Мы не сеем','Железные острова',TRUE),(6,'Дом Тиреллов','Вырастая — крепнем','Простор',TRUE),(7,'Дом Мартеллов','Непокорённые, несгибаемые, несломленные','Дорн',TRUE),(8,'Дом Талли','Семья, долг, честь','Речные земли',TRUE),(9,'Дом Болтонов','Наши клинки остры','Север',FALSE),(10,'Дом Рейнов','Долгая и острая память','Западные земли',FALSE);
+  INSERT INTO characters VALUES (1,'Эддард Старк',1,'Лорд Винтерфелла',35,FALSE),(2,'Кейтилин Старк',1,'Леди Винтерфелла',34,FALSE),(3,'Робб Старк',1,'Король Севера',16,FALSE),(4,'Санса Старк',1,'Леди Винтерфелла',13,TRUE),(5,'Арья Старк',1,NULL,11,TRUE),(6,'Тирион Ланнистер',2,'Десница королевы',24,TRUE),(7,'Серсея Ланнистер',2,'Королева',34,FALSE),(8,'Джейме Ланнистер',2,'Лорд-командующий',32,TRUE),(9,'Тайвин Ланнистер',2,'Лорд Утёса Кастерли',58,FALSE),(10,'Дейенерис Таргариен',3,'Королева Миэрина',16,TRUE),(11,'Визерис Таргариен',3,'Принц',22,FALSE),(12,'Роберт Баратеон',4,'Король',36,FALSE),(13,'Станнис Баратеон',4,'Лорд Драконьего Камня',34,FALSE),(14,'Ренли Баратеон',4,'Лорд Штормового Предела',21,FALSE),(15,'Джоффри Баратеон',4,'Король',13,FALSE),(16,'Теон Грейджой',5,'Наследник Пайка',19,TRUE),(17,'Маргери Тирелл',6,'Королева',16,FALSE),(18,'Оленна Тирелл',6,'Леди Хайгардена',70,FALSE),(19,'Оберин Мартелл',7,'Принц Дорна',42,FALSE),(20,'Эллария Сэнд',7,NULL,35,TRUE),(21,'Эдмар Талли',8,'Лорд Риверрана',30,TRUE),(22,'Русе Болтон',9,'Лорд Дредфорта',45,FALSE),(23,'Рамси Болтон',9,'Лорд Винтерфелла',20,FALSE),(24,'Бронн',NULL,'Наёмник',30,TRUE),(25,'Кхал Дрого',NULL,'Кхал',30,FALSE);
+  INSERT INTO battles VALUES (1,'Битва в Шепчущем лесу',299,1,2,1,'Речные земли'),(2,'Битва у Черноводной',299,4,2,2,'Королевская Гавань'),(3,'Захват Винтерфелла',299,9,1,9,'Винтерфелл'),(4,'Битва при Окскроссе',299,1,2,1,'Западные земли'),(5,'Осада Риверрана',300,2,8,2,'Риверран'),(6,'Битва бастардов',303,1,9,1,'Винтерфелл'),(7,'Нападение на обоз Ланнистеров',304,3,2,3,'Простор'),(8,'Восстание Грейджоя',289,5,4,4,'Пайк'),(9,'Битва на Зелёном Зубце',298,2,1,2,'Речные земли'),(10,'Падение Хайгардена',304,2,6,2,'Хайгарден');
+  INSERT INTO marriages VALUES (1,1,2,282,'Риверран'),(2,6,4,299,'Королевская Гавань'),(3,12,7,284,'Королевская Гавань'),(4,17,14,298,'Штормовой Предел'),(5,17,15,300,'Королевская Гавань'),(6,4,23,302,'Винтерфелл'),(7,10,25,298,'Дотракийское море'),(8,19,20,295,'Солнечное Копьё');
+solution: |
+  SELECT b.name AS battle_name,
+         attacker.name AS attacker_name,
+         defender.name AS defender_name
+  FROM battles AS b
+  INNER JOIN houses AS attacker ON b.attacker_house_id = attacker.id
+  INNER JOIN houses AS defender ON b.defender_house_id = defender.id;
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Таблица houses нужна два раза."
+  - "Один алиас будет для атакующего дома, второй — для защищающегося."
+  - "Используй houses AS attacker и houses AS defender."
+theory: |
+  <div class="theory-html">
+    <p>Одну и ту же таблицу можно присоединить несколько раз. Главное — дать каждому экземпляру свой алиас.</p>
+    <svg viewBox="0 0 560 190" width="100%"><rect width="560" height="190" rx="12" fill="#313244"/><rect x="205" y="25" width="150" height="50" rx="8" fill="#1e1e2e" stroke="#89b4fa"/><text x="245" y="56" fill="#cdd6f4">battles</text><rect x="35" y="120" width="160" height="50" rx="8" fill="#1e1e2e" stroke="#a6e3a1"/><text x="70" y="151" fill="#cdd6f4">attacker</text><rect x="365" y="120" width="160" height="50" rx="8" fill="#1e1e2e" stroke="#f38ba8"/><text x="400" y="151" fill="#cdd6f4">defender</text><path d="M240 75 L150 120" stroke="#a6e3a1" stroke-width="3"/><path d="M320 75 L410 120" stroke="#f38ba8" stroke-width="3"/></svg>
+    <p>Порядок JOIN читается от FROM: сначала берём battles, затем добавляем имя атакующего, затем имя защитника.</p>
+    <p><code>JOIN houses AS attacker ON b.attacker_house_id = attacker.id</code></p>
+    <div style="border-left: 3px solid #89b4fa; padding-left: 12px;">Запомни: если одна таблица играет разные роли, ей нужны разные алиасы.</div>
+  </div>

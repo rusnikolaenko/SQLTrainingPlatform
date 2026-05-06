@@ -1,0 +1,39 @@
+id: 19
+topic: joins
+difficulty: 4
+title: "Битвы в которых дом и атаковал и проиграл"
+description: |
+  Найди битвы, где дом был атакующим, но не стал победителем.
+
+  Используй JOIN с двумя условиями в ON.
+  Колонки результата: battle_name, attacker_name, location.
+schema_setup: |
+  CREATE TABLE houses (id INTEGER PRIMARY KEY, name TEXT, words TEXT, region TEXT, is_great BOOLEAN);
+  CREATE TABLE characters (id INTEGER PRIMARY KEY, name TEXT, house_id INTEGER REFERENCES houses(id), title TEXT, age INTEGER, is_alive BOOLEAN);
+  CREATE TABLE battles (id INTEGER PRIMARY KEY, name TEXT, year INTEGER, attacker_house_id INTEGER REFERENCES houses(id), defender_house_id INTEGER REFERENCES houses(id), winner_house_id INTEGER REFERENCES houses(id), location TEXT);
+  CREATE TABLE marriages (id INTEGER PRIMARY KEY, character1_id INTEGER REFERENCES characters(id), character2_id INTEGER REFERENCES characters(id), year INTEGER, location TEXT);
+  INSERT INTO houses VALUES (1,'Дом Старков','Зима близко','Север',TRUE),(2,'Дом Ланнистеров','Услышь мой рёв','Западные земли',TRUE),(3,'Дом Таргариенов','Пламя и кровь','Драконий Камень',TRUE),(4,'Дом Баратеонов','Нам ярость','Штормовые земли',TRUE),(5,'Дом Грейджоев','Мы не сеем','Железные острова',TRUE),(6,'Дом Тиреллов','Вырастая — крепнем','Простор',TRUE),(7,'Дом Мартеллов','Непокорённые, несгибаемые, несломленные','Дорн',TRUE),(8,'Дом Талли','Семья, долг, честь','Речные земли',TRUE),(9,'Дом Болтонов','Наши клинки остры','Север',FALSE),(10,'Дом Рейнов','Долгая и острая память','Западные земли',FALSE);
+  INSERT INTO characters VALUES (1,'Эддард Старк',1,'Лорд Винтерфелла',35,FALSE),(2,'Кейтилин Старк',1,'Леди Винтерфелла',34,FALSE),(3,'Робб Старк',1,'Король Севера',16,FALSE),(4,'Санса Старк',1,'Леди Винтерфелла',13,TRUE),(5,'Арья Старк',1,NULL,11,TRUE),(6,'Тирион Ланнистер',2,'Десница королевы',24,TRUE),(7,'Серсея Ланнистер',2,'Королева',34,FALSE),(8,'Джейме Ланнистер',2,'Лорд-командующий',32,TRUE),(9,'Тайвин Ланнистер',2,'Лорд Утёса Кастерли',58,FALSE),(10,'Дейенерис Таргариен',3,'Королева Миэрина',16,TRUE),(11,'Визерис Таргариен',3,'Принц',22,FALSE),(12,'Роберт Баратеон',4,'Король',36,FALSE),(13,'Станнис Баратеон',4,'Лорд Драконьего Камня',34,FALSE),(14,'Ренли Баратеон',4,'Лорд Штормового Предела',21,FALSE),(15,'Джоффри Баратеон',4,'Король',13,FALSE),(16,'Теон Грейджой',5,'Наследник Пайка',19,TRUE),(17,'Маргери Тирелл',6,'Королева',16,FALSE),(18,'Оленна Тирелл',6,'Леди Хайгардена',70,FALSE),(19,'Оберин Мартелл',7,'Принц Дорна',42,FALSE),(20,'Эллария Сэнд',7,NULL,35,TRUE),(21,'Эдмар Талли',8,'Лорд Риверрана',30,TRUE),(22,'Русе Болтон',9,'Лорд Дредфорта',45,FALSE),(23,'Рамси Болтон',9,'Лорд Винтерфелла',20,FALSE),(24,'Бронн',NULL,'Наёмник',30,TRUE),(25,'Кхал Дрого',NULL,'Кхал',30,FALSE);
+  INSERT INTO battles VALUES (1,'Битва в Шепчущем лесу',299,1,2,1,'Речные земли'),(2,'Битва у Черноводной',299,4,2,2,'Королевская Гавань'),(3,'Захват Винтерфелла',299,9,1,9,'Винтерфелл'),(4,'Битва при Окскроссе',299,1,2,1,'Западные земли'),(5,'Осада Риверрана',300,2,8,2,'Риверран'),(6,'Битва бастардов',303,1,9,1,'Винтерфелл'),(7,'Нападение на обоз Ланнистеров',304,3,2,3,'Простор'),(8,'Восстание Грейджоя',289,5,4,4,'Пайк'),(9,'Битва на Зелёном Зубце',298,2,1,2,'Речные земли'),(10,'Падение Хайгардена',304,2,6,2,'Хайгарден');
+  INSERT INTO marriages VALUES (1,1,2,282,'Риверран'),(2,6,4,299,'Королевская Гавань'),(3,12,7,284,'Королевская Гавань'),(4,17,14,298,'Штормовой Предел'),(5,17,15,300,'Королевская Гавань'),(6,4,23,302,'Винтерфелл'),(7,10,25,298,'Дотракийское море'),(8,19,20,295,'Солнечное Копьё');
+solution: |
+  SELECT b.name AS battle_name, h.name AS attacker_name, b.location
+  FROM battles AS b
+  INNER JOIN houses AS h
+      ON b.attacker_house_id = h.id
+     AND b.winner_house_id != h.id;
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Первое условие ON связывает атакующего с домом."
+  - "Второе условие должно оставить только проигравших атакующих."
+  - "Добавь AND b.winner_house_id != h.id прямо в ON."
+theory: |
+  <div class="theory-html">
+    <p>В ON можно писать несколько условий. Первое обычно связывает ключи, остальные уточняют, какие совпадения подходят.</p>
+    <svg viewBox="0 0 360 170" width="100%"><rect width="360" height="170" rx="12" fill="#313244"/><circle cx="145" cy="85" r="62" fill="#89b4fa" fill-opacity="0.35"/><circle cx="215" cy="85" r="62" fill="#a6e3a1" fill-opacity="0.35"/><path d="M180 34 A62 62 0 0 1 180 136 A62 62 0 0 1 180 34" fill="#f38ba8" fill-opacity="0.75"/><text x="118" y="92" fill="#cdd6f4">ON + AND</text></svg>
+    <p>Для INNER JOIN фильтр в ON часто похож на WHERE. Но для OUTER JOIN разница становится критичной, поэтому полезно понимать оба места.</p>
+    <p><code>JOIN houses AS h ON b.attacker_house_id = h.id AND b.winner_house_id != h.id</code></p>
+    <div style="border-left: 3px solid #89b4fa; padding-left: 12px;">Запомни: ON может содержать не одно, а несколько условий соединения.</div>
+  </div>

@@ -1,0 +1,105 @@
+﻿id: 7
+topic: basics
+difficulty: 2
+title: "РўРѕРї-3 СЃС‚Р°СЂРµР№С€РёС… РїРµСЂСЃРѕРЅР°Р¶Р°"
+description: |
+  РСЃРїРѕР»СЊР·СѓР№ С‚Р°Р±Р»РёС†Сѓ characters.
+
+  Р—Р°РґР°С‡Р°: РЅР°Р№РґРё С‚СЂС‘С… СЃС‚Р°СЂРµР№С€РёС… РїРµСЂСЃРѕРЅР°Р¶РµР№.
+  Р’С‹Р±РµСЂРё name Рё age, РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РІ РїРѕ СѓР±С‹РІР°РЅРёСЋ РІРѕР·СЂР°СЃС‚Р°,
+  Рё РІРµСЂРЅРё С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Рµ 3 СЃС‚СЂРѕРєРё.
+  РљРѕР»РѕРЅРєРё СЂРµР·СѓР»СЊС‚Р°С‚Р°: name, age.
+  РџРѕСЂСЏРґРѕРє СЃС‚СЂРѕРє РІР°Р¶РµРЅ.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'РЎС‚Р°СЂРє',      'Р—РёРјР° Р±Р»РёР·РєРѕ',                         'РЎРµРІРµСЂ',            true),
+      (2, 'Р›Р°РЅРЅРёСЃС‚РµСЂ',  'РЎР»С‹С€РёС€СЊ РјРѕР№ СЂС‘РІ',                     'Р—Р°РїР°Рґ',            true),
+      (3, 'РўР°СЂРіР°СЂРёРµРЅ',  'РћРіРѕРЅСЊ Рё РєСЂРѕРІСЊ',                       'Р”СЂР°РєРѕРЅРёР№ РљР°РјРµРЅСЊ',  true),
+      (4, 'Р‘Р°СЂР°С‚РµРѕРЅ',   'РќР°С€Р° вЂ” СЏСЂРѕСЃС‚СЊ',                       'РЁС‚РѕСЂРјРѕРІС‹Рµ Р—РµРјР»Рё',  true),
+      (5, 'РўРёСЂРµР»Р»',     'Р Р°СЃС‚С‘Рј РІ СЃРёР»Рµ',                       'РџСЂРѕСЃС‚РѕСЂ',          true),
+      (6, 'РњР°СЂС‚РµР»Р»',    'РќРµСЃР»РѕРјР»РµРЅРЅС‹Р№, РЅРµРїРѕРіРЅСѓС‚С‹Р№, РЅРµСЃРѕРіРЅСѓРІС€РёР№СЃСЏ', 'Р”РѕСЂРЅ',         true),
+      (7, 'РђСЂСЂРµРЅ',      'Р’С‹СЃРѕРєРѕ, РєР°Рє С‡РµСЃС‚СЊ',                   'Р”РѕР»РёРЅР° РђСЂСЂРµРЅ',     true),
+      (8, 'Р‘РѕР»С‚РѕРЅ',     'РќР°С€ РЅРѕР¶ РІСЃРµРіРґР° РѕСЃС‚СЂРµРµ',               'РЎРµРІРµСЂ',            false);
+  INSERT INTO characters VALUES
+      (1,  'Р­РґРґР°СЂРґ РЎС‚Р°СЂРє',        1, 'Р›РѕСЂРґ',            35, false),
+      (2,  'Р”Р¶РѕРЅ РЎРЅРѕСѓ',           1, 'Р›РѕСЂРґ',            17, true),
+      (3,  'РђСЂСЊСЏ РЎС‚Р°СЂРє',          1, 'Р›РµРґРё',            11, true),
+      (4,  'РЎР°РЅСЃР° РЎС‚Р°СЂРє',         1, 'Р›РµРґРё',            14, true),
+      (5,  'РўРёСЂРёРѕРЅ Р›Р°РЅРЅРёСЃС‚РµСЂ',    2, 'Р›РѕСЂРґ',            32, true),
+      (6,  'РЎРµСЂСЃРµСЏ Р›Р°РЅРЅРёСЃС‚РµСЂ',    2, 'РљРѕСЂРѕР»РµРІР°',        34, true),
+      (7,  'Р”Р¶РµР№РјРµ Р›Р°РЅРЅРёСЃС‚РµСЂ',    2, 'РЎРёСЂ',             36, true),
+      (8,  'Р”РµР№РµРЅРµСЂРёСЃ РўР°СЂРіР°СЂРёРµРЅ', 3, 'РљРѕСЂРѕР»РµРІР°',        16, true),
+      (9,  'Р’РёР·РµСЂРёСЃ РўР°СЂРіР°СЂРёРµРЅ',   3, 'РџСЂРёРЅС†',           22, false),
+      (10, 'Р”Р¶РѕС„С„СЂРё Р‘Р°СЂР°С‚РµРѕРЅ',    4, 'РљРѕСЂРѕР»СЊ',          13, false),
+      (11, 'РЎС‚Р°РЅРЅРёСЃ Р‘Р°СЂР°С‚РµРѕРЅ',    4, 'Р›РѕСЂРґ',            48, false),
+      (12, 'РњР°СЂРіРµСЂРё РўРёСЂРµР»Р»',      5, 'РљРѕСЂРѕР»РµРІР°',        15, false),
+      (13, 'РћР±РµСЂРёРЅ РњР°СЂС‚РµР»Р»',      6, 'РџСЂРёРЅС†',           42, false),
+      (14, 'Р›РёР·Р° РђСЂСЂРµРЅ',          7, 'Р›РµРґРё',            33, false),
+      (15, 'Р Р°РјСЃРё Р‘РѕР»С‚РѕРЅ',        8, 'Р›РѕСЂРґ',            25, false);
+solution: SELECT name, age FROM characters ORDER BY age DESC LIMIT 3
+check:
+  ordered: true
+  columns_strict: true
+hints:
+  - "РЎРЅР°С‡Р°Р»Р° РѕС‚СЃРѕСЂС‚РёСЂСѓР№ РїРѕ СѓР±С‹РІР°РЅРёСЋ РІРѕР·СЂР°СЃС‚Р° СЃ РїРѕРјРѕС‰СЊСЋ ORDER BY age DESC"
+  - "LIMIT РѕРіСЂР°РЅРёС‡РёРІР°РµС‚ РєРѕР»РёС‡РµСЃС‚РІРѕ РІРѕР·РІСЂР°С‰Р°РµРјС‹С… СЃС‚СЂРѕРє"
+  - "РЎРёРЅС‚Р°РєСЃРёСЃ: SELECT name, age FROM characters ORDER BY age DESC LIMIT 3"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">LIMIT вЂ” РѕРіСЂР°РЅРёС‡РµРЅРёРµ С‡РёСЃР»Р° СЃС‚СЂРѕРє</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">LIMIT n</code> РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РѕР»СЊРєРѕ РїРµСЂРІС‹Рµ <em>n</em> СЃС‚СЂРѕРє РёР· СЂРµР·СѓР»СЊС‚Р°С‚Р°.
+    Р’СЃРµРіРґР° РёСЃРїРѕР»СЊР·СѓР№ РІРјРµСЃС‚Рµ СЃ <code>ORDER BY</code>, РёРЅР°С‡Рµ В«РїРµСЂРІС‹РµВ» СЃС‚СЂРѕРєРё РѕРїСЂРµРґРµР»СЏСЋС‚СЃСЏ СЃР»СѓС‡Р°Р№РЅРѕ.
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">SELECT name, age
+  FROM characters
+  ORDER BY age DESC
+  LIMIT 3;</pre>
+  <svg viewBox="0 0 400 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="148" rx="6" fill="#1e1e2e"/>
+    <text x="92" y="18" text-anchor="middle" fill="#cdd6f4" font-size="9" font-family="monospace">РџРѕСЃР»Рµ ORDER BY age DESC (15 СЃС‚СЂРѕРє)</text>
+    <rect x="8" y="24" width="175" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="1"/>
+    <text x="16" y="35" fill="#a6e3a1" font-size="9" font-family="monospace">РЎС‚Р°РЅРЅРёСЃ Р‘Р°СЂР°С‚РµРѕРЅ   48 в†ђ LIMIT</text>
+    <rect x="8" y="40" width="175" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="1"/>
+    <text x="16" y="51" fill="#a6e3a1" font-size="9" font-family="monospace">РћР±РµСЂРёРЅ РњР°СЂС‚РµР»Р»     42 в†ђ LIMIT</text>
+    <rect x="8" y="56" width="175" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="1"/>
+    <text x="16" y="67" fill="#a6e3a1" font-size="9" font-family="monospace">Р”Р¶РµР№РјРµ Р›Р°РЅРЅРёСЃС‚РµСЂ   36 в†ђ LIMIT</text>
+    <line x1="8" y1="72" x2="183" y2="72" stroke="#f38ba8" stroke-width="1.5" stroke-dasharray="5,3"/>
+    <text x="16" y="85" fill="#585b70" font-size="9" font-family="monospace">Р­РґРґР°СЂРґ РЎС‚Р°СЂРє       35</text>
+    <text x="16" y="99" fill="#585b70" font-size="9" font-family="monospace">РЎРµСЂСЃРµСЏ Р›Р°РЅРЅРёСЃС‚РµСЂ   34</text>
+    <text x="92" y="118" text-anchor="middle" fill="#585b70" font-size="9">... РµС‰С‘ 10 СЃС‚СЂРѕРє (РѕС‚Р±СЂРѕС€РµРЅС‹)</text>
+    <text x="196" y="76" fill="#89b4fa" font-size="22">в†’</text>
+    <text x="190" y="92" fill="#89b4fa" font-size="8" font-family="monospace" text-anchor="middle">LIMIT 3</text>
+    <rect x="214" y="24" width="178" height="56" rx="4" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
+    <rect x="214" y="24" width="178" height="18" rx="4" fill="#45475a"/>
+    <text x="303" y="36" text-anchor="middle" fill="#a6e3a1" font-size="9" font-family="monospace">СЂРµР·СѓР»СЊС‚Р°С‚ (3 СЃС‚СЂРѕРєРё)</text>
+    <text x="222" y="53" fill="#a6e3a1" font-size="9" font-family="monospace">РЎС‚Р°РЅРЅРёСЃ Р‘Р°СЂР°С‚РµРѕРЅ  48</text>
+    <text x="222" y="67" fill="#a6e3a1" font-size="9" font-family="monospace">РћР±РµСЂРёРЅ РњР°СЂС‚РµР»Р»    42</text>
+    <text x="222" y="81" fill="#a6e3a1" font-size="9" font-family="monospace">Р”Р¶РµР№РјРµ Р›Р°РЅРЅРёСЃС‚РµСЂ  36</text>
+    <text x="303" y="118" text-anchor="middle" fill="#89b4fa" font-size="9">LIMIT 3 в†’ С‚РѕР»СЊРєРѕ С‚РѕРї-3</text>
+  </svg>
+  <p style="color:#cdd6f4;margin:0 0 10px;font-size:13px">
+    <strong style="color:#89b4fa">OFFSET</strong> РїСЂРѕРїСѓСЃРєР°РµС‚ РїРµСЂРІС‹Рµ <em>n</em> СЃС‚СЂРѕРє вЂ” РїРѕР»РµР·РµРЅ РґР»СЏ РїРѕСЃС‚СЂР°РЅРёС‡РЅРѕР№ РЅР°РІРёРіР°С†РёРё:
+  </p>
+  <pre style="background:#1e1e2e;padding:8px 12px;border-radius:6px;color:#cdd6f4;font-size:12px;margin:0 0 12px;overflow-x:auto">LIMIT 3 OFFSET 0  -- СЃС‚СЂР°РЅРёС†Р° 1: СЃС‚СЂРѕРєРё 1-3
+  LIMIT 3 OFFSET 3  -- СЃС‚СЂР°РЅРёС†Р° 2: СЃС‚СЂРѕРєРё 4-6
+  LIMIT 3 OFFSET 6  -- СЃС‚СЂР°РЅРёС†Р° 3: СЃС‚СЂРѕРєРё 7-9</pre>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Р—Р°РїРѕРјРЅРё:</strong>
+    <span style="color:#cdd6f4"> LIMIT РІСЃРµРіРґР° РїСЂРёРјРµРЅСЏРµС‚СЃСЏ <em>РїРѕСЃР»Рµ</em> СЃРѕСЂС‚РёСЂРѕРІРєРё. РЎРЅР°С‡Р°Р»Р° PostgreSQL СЃРѕСЂС‚РёСЂСѓРµС‚ РІСЃРµ СЃС‚СЂРѕРєРё, РїРѕС‚РѕРј Р±РµСЂС‘С‚ РїРµСЂРІС‹Рµ N.</span>
+  </div>
+

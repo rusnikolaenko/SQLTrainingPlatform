@@ -1,0 +1,128 @@
+id: 9
+topic: joins
+difficulty: 2
+title: "Персонажи и их дома"
+description: |
+  В Вестеросе персонажи связаны с домами через поле characters.house_id.
+
+  Выведи только тех персонажей, у которых есть дом.
+  Колонки результата: name, house_name, region.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT, words TEXT, region TEXT, is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT, house_id INTEGER REFERENCES houses(id),
+      title TEXT, age INTEGER, is_alive BOOLEAN
+  );
+  CREATE TABLE battles (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      year INTEGER,
+      attacker_house_id INTEGER REFERENCES houses(id),
+      defender_house_id INTEGER REFERENCES houses(id),
+      winner_house_id INTEGER REFERENCES houses(id),
+      location TEXT
+  );
+  CREATE TABLE marriages (
+      id INTEGER PRIMARY KEY,
+      character1_id INTEGER REFERENCES characters(id),
+      character2_id INTEGER REFERENCES characters(id),
+      year INTEGER,
+      location TEXT
+  );
+  INSERT INTO houses VALUES
+      (1, 'Дом Старков', 'Зима близко', 'Север', TRUE),
+      (2, 'Дом Ланнистеров', 'Услышь мой рёв', 'Западные земли', TRUE),
+      (3, 'Дом Таргариенов', 'Пламя и кровь', 'Драконий Камень', TRUE),
+      (4, 'Дом Баратеонов', 'Нам ярость', 'Штормовые земли', TRUE),
+      (5, 'Дом Грейджоев', 'Мы не сеем', 'Железные острова', TRUE),
+      (6, 'Дом Тиреллов', 'Вырастая — крепнем', 'Простор', TRUE),
+      (7, 'Дом Мартеллов', 'Непокорённые, несгибаемые, несломленные', 'Дорн', TRUE),
+      (8, 'Дом Талли', 'Семья, долг, честь', 'Речные земли', TRUE),
+      (9, 'Дом Болтонов', 'Наши клинки остры', 'Север', FALSE),
+      (10, 'Дом Рейнов', 'Долгая и острая память', 'Западные земли', FALSE);
+  INSERT INTO characters VALUES
+      (1, 'Эддард Старк', 1, 'Лорд Винтерфелла', 35, FALSE),
+      (2, 'Кейтилин Старк', 1, 'Леди Винтерфелла', 34, FALSE),
+      (3, 'Робб Старк', 1, 'Король Севера', 16, FALSE),
+      (4, 'Санса Старк', 1, 'Леди Винтерфелла', 13, TRUE),
+      (5, 'Арья Старк', 1, NULL, 11, TRUE),
+      (6, 'Тирион Ланнистер', 2, 'Десница королевы', 24, TRUE),
+      (7, 'Серсея Ланнистер', 2, 'Королева', 34, FALSE),
+      (8, 'Джейме Ланнистер', 2, 'Лорд-командующий', 32, TRUE),
+      (9, 'Тайвин Ланнистер', 2, 'Лорд Утёса Кастерли', 58, FALSE),
+      (10, 'Дейенерис Таргариен', 3, 'Королева Миэрина', 16, TRUE),
+      (11, 'Визерис Таргариен', 3, 'Принц', 22, FALSE),
+      (12, 'Роберт Баратеон', 4, 'Король', 36, FALSE),
+      (13, 'Станнис Баратеон', 4, 'Лорд Драконьего Камня', 34, FALSE),
+      (14, 'Ренли Баратеон', 4, 'Лорд Штормового Предела', 21, FALSE),
+      (15, 'Джоффри Баратеон', 4, 'Король', 13, FALSE),
+      (16, 'Теон Грейджой', 5, 'Наследник Пайка', 19, TRUE),
+      (17, 'Маргери Тирелл', 6, 'Королева', 16, FALSE),
+      (18, 'Оленна Тирелл', 6, 'Леди Хайгардена', 70, FALSE),
+      (19, 'Оберин Мартелл', 7, 'Принц Дорна', 42, FALSE),
+      (20, 'Эллария Сэнд', 7, NULL, 35, TRUE),
+      (21, 'Эдмар Талли', 8, 'Лорд Риверрана', 30, TRUE),
+      (22, 'Русе Болтон', 9, 'Лорд Дредфорта', 45, FALSE),
+      (23, 'Рамси Болтон', 9, 'Лорд Винтерфелла', 20, FALSE),
+      (24, 'Бронн', NULL, 'Наёмник', 30, TRUE),
+      (25, 'Кхал Дрого', NULL, 'Кхал', 30, FALSE);
+  INSERT INTO battles VALUES
+      (1, 'Битва в Шепчущем лесу', 299, 1, 2, 1, 'Речные земли'),
+      (2, 'Битва у Черноводной', 299, 4, 2, 2, 'Королевская Гавань'),
+      (3, 'Захват Винтерфелла', 299, 9, 1, 9, 'Винтерфелл'),
+      (4, 'Битва при Окскроссе', 299, 1, 2, 1, 'Западные земли'),
+      (5, 'Осада Риверрана', 300, 2, 8, 2, 'Риверран'),
+      (6, 'Битва бастардов', 303, 1, 9, 1, 'Винтерфелл'),
+      (7, 'Нападение на обоз Ланнистеров', 304, 3, 2, 3, 'Простор'),
+      (8, 'Восстание Грейджоя', 289, 5, 4, 4, 'Пайк'),
+      (9, 'Битва на Зелёном Зубце', 298, 2, 1, 2, 'Речные земли'),
+      (10, 'Падение Хайгардена', 304, 2, 6, 2, 'Хайгарден');
+  INSERT INTO marriages VALUES
+      (1, 1, 2, 282, 'Риверран'),
+      (2, 6, 4, 299, 'Королевская Гавань'),
+      (3, 12, 7, 284, 'Королевская Гавань'),
+      (4, 17, 14, 298, 'Штормовой Предел'),
+      (5, 17, 15, 300, 'Королевская Гавань'),
+      (6, 4, 23, 302, 'Винтерфелл'),
+      (7, 10, 25, 298, 'Дотракийское море'),
+      (8, 19, 20, 295, 'Солнечное Копьё');
+solution: |
+  SELECT c.name, h.name AS house_name, h.region
+  FROM characters AS c
+  INNER JOIN houses AS h ON c.house_id = h.id;
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Нужны две таблицы: персонажи и дома."
+  - "Связь идёт по characters.house_id и houses.id."
+  - "Используй INNER JOIN houses AS h ON c.house_id = h.id."
+theory: |
+  <div class="theory-html">
+    <p>JOIN соединяет строки из двух таблиц. В этой задаче персонаж хранит только house_id, а название и регион лежат в таблице houses.</p>
+    <svg viewBox="0 0 560 170" width="100%" role="img" aria-label="Две таблицы связаны ключом">
+      <rect width="560" height="170" rx="12" fill="#313244"/>
+      <rect x="35" y="35" width="170" height="95" rx="8" fill="#1e1e2e" stroke="#89b4fa"/>
+      <rect x="355" y="35" width="170" height="95" rx="8" fill="#1e1e2e" stroke="#a6e3a1"/>
+      <text x="70" y="62" fill="#cdd6f4">characters</text>
+      <text x="390" y="62" fill="#cdd6f4">houses</text>
+      <text x="62" y="92" fill="#89b4fa">house_id</text>
+      <text x="410" y="92" fill="#a6e3a1">id</text>
+      <path d="M205 86 C260 45 300 45 355 86" stroke="#89b4fa" stroke-width="4" fill="none" marker-end="url(#arrow)"/>
+      <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#89b4fa"/></marker></defs>
+    </svg>
+    <svg viewBox="0 0 360 170" width="100%" role="img" aria-label="INNER JOIN берёт только пересечение">
+      <rect width="360" height="170" rx="12" fill="#313244"/>
+      <circle cx="145" cy="85" r="62" fill="#89b4fa" fill-opacity="0.35"/>
+      <circle cx="215" cy="85" r="62" fill="#a6e3a1" fill-opacity="0.35"/>
+      <path d="M180 34 A62 62 0 0 1 180 136 A62 62 0 0 1 180 34" fill="#a6e3a1" fill-opacity="0.75"/>
+      <text x="135" y="92" fill="#cdd6f4">INNER</text>
+    </svg>
+    <p>Условие <code>ON c.house_id = h.id</code> говорит базе, какие строки считать связанными. Если забыть ON, получится CROSS JOIN: каждая строка слева склеится с каждой строкой справа.</p>
+    <p><code>SELECT c.name, h.name FROM characters AS c INNER JOIN houses AS h ON c.house_id = h.id;</code></p>
+    <div style="border-left: 3px solid #89b4fa; padding-left: 12px;">Запомни: INNER JOIN возвращает только строки, где совпадение найдено в обеих таблицах.</div>
+  </div>

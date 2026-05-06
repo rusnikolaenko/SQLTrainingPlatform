@@ -1,0 +1,38 @@
+id: 18
+topic: joins
+difficulty: 3
+title: "Супружеские пары с именами"
+description: |
+  В таблице marriages хранятся только id двух персонажей.
+
+  Присоедини characters дважды: один раз для первого супруга, второй раз для второго.
+  Колонки результата: spouse_1, spouse_2.
+schema_setup: |
+  CREATE TABLE houses (id INTEGER PRIMARY KEY, name TEXT, words TEXT, region TEXT, is_great BOOLEAN);
+  CREATE TABLE characters (id INTEGER PRIMARY KEY, name TEXT, house_id INTEGER REFERENCES houses(id), title TEXT, age INTEGER, is_alive BOOLEAN);
+  CREATE TABLE battles (id INTEGER PRIMARY KEY, name TEXT, year INTEGER, attacker_house_id INTEGER REFERENCES houses(id), defender_house_id INTEGER REFERENCES houses(id), winner_house_id INTEGER REFERENCES houses(id), location TEXT);
+  CREATE TABLE marriages (id INTEGER PRIMARY KEY, character1_id INTEGER REFERENCES characters(id), character2_id INTEGER REFERENCES characters(id), year INTEGER, location TEXT);
+  INSERT INTO houses VALUES (1,'Дом Старков','Зима близко','Север',TRUE),(2,'Дом Ланнистеров','Услышь мой рёв','Западные земли',TRUE),(3,'Дом Таргариенов','Пламя и кровь','Драконий Камень',TRUE),(4,'Дом Баратеонов','Нам ярость','Штормовые земли',TRUE),(5,'Дом Грейджоев','Мы не сеем','Железные острова',TRUE),(6,'Дом Тиреллов','Вырастая — крепнем','Простор',TRUE),(7,'Дом Мартеллов','Непокорённые, несгибаемые, несломленные','Дорн',TRUE),(8,'Дом Талли','Семья, долг, честь','Речные земли',TRUE),(9,'Дом Болтонов','Наши клинки остры','Север',FALSE),(10,'Дом Рейнов','Долгая и острая память','Западные земли',FALSE);
+  INSERT INTO characters VALUES (1,'Эддард Старк',1,'Лорд Винтерфелла',35,FALSE),(2,'Кейтилин Старк',1,'Леди Винтерфелла',34,FALSE),(3,'Робб Старк',1,'Король Севера',16,FALSE),(4,'Санса Старк',1,'Леди Винтерфелла',13,TRUE),(5,'Арья Старк',1,NULL,11,TRUE),(6,'Тирион Ланнистер',2,'Десница королевы',24,TRUE),(7,'Серсея Ланнистер',2,'Королева',34,FALSE),(8,'Джейме Ланнистер',2,'Лорд-командующий',32,TRUE),(9,'Тайвин Ланнистер',2,'Лорд Утёса Кастерли',58,FALSE),(10,'Дейенерис Таргариен',3,'Королева Миэрина',16,TRUE),(11,'Визерис Таргариен',3,'Принц',22,FALSE),(12,'Роберт Баратеон',4,'Король',36,FALSE),(13,'Станнис Баратеон',4,'Лорд Драконьего Камня',34,FALSE),(14,'Ренли Баратеон',4,'Лорд Штормового Предела',21,FALSE),(15,'Джоффри Баратеон',4,'Король',13,FALSE),(16,'Теон Грейджой',5,'Наследник Пайка',19,TRUE),(17,'Маргери Тирелл',6,'Королева',16,FALSE),(18,'Оленна Тирелл',6,'Леди Хайгардена',70,FALSE),(19,'Оберин Мартелл',7,'Принц Дорна',42,FALSE),(20,'Эллария Сэнд',7,NULL,35,TRUE),(21,'Эдмар Талли',8,'Лорд Риверрана',30,TRUE),(22,'Русе Болтон',9,'Лорд Дредфорта',45,FALSE),(23,'Рамси Болтон',9,'Лорд Винтерфелла',20,FALSE),(24,'Бронн',NULL,'Наёмник',30,TRUE),(25,'Кхал Дрого',NULL,'Кхал',30,FALSE);
+  INSERT INTO battles VALUES (1,'Битва в Шепчущем лесу',299,1,2,1,'Речные земли'),(2,'Битва у Черноводной',299,4,2,2,'Королевская Гавань'),(3,'Захват Винтерфелла',299,9,1,9,'Винтерфелл'),(4,'Битва при Окскроссе',299,1,2,1,'Западные земли'),(5,'Осада Риверрана',300,2,8,2,'Риверран'),(6,'Битва бастардов',303,1,9,1,'Винтерфелл'),(7,'Нападение на обоз Ланнистеров',304,3,2,3,'Простор'),(8,'Восстание Грейджоя',289,5,4,4,'Пайк'),(9,'Битва на Зелёном Зубце',298,2,1,2,'Речные земли'),(10,'Падение Хайгардена',304,2,6,2,'Хайгарден');
+  INSERT INTO marriages VALUES (1,1,2,282,'Риверран'),(2,6,4,299,'Королевская Гавань'),(3,12,7,284,'Королевская Гавань'),(4,17,14,298,'Штормовой Предел'),(5,17,15,300,'Королевская Гавань'),(6,4,23,302,'Винтерфелл'),(7,10,25,298,'Дотракийское море'),(8,19,20,295,'Солнечное Копьё');
+solution: |
+  SELECT c1.name AS spouse_1, c2.name AS spouse_2
+  FROM marriages AS m
+  INNER JOIN characters AS c1 ON m.character1_id = c1.id
+  INNER JOIN characters AS c2 ON m.character2_id = c2.id;
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Таблица marriages указывает на characters двумя разными колонками."
+  - "Нужно два алиаса одной таблицы characters."
+  - "JOIN characters AS c1 по character1_id и characters AS c2 по character2_id."
+theory: |
+  <div class="theory-html">
+    <p>Self-join — это соединение таблицы с самой собой. Здесь characters играет две роли: первый супруг и второй супруг.</p>
+    <svg viewBox="0 0 560 170" width="100%"><rect width="560" height="170" rx="12" fill="#313244"/><rect x="200" y="55" width="150" height="55" rx="8" fill="#1e1e2e" stroke="#89b4fa"/><text x="232" y="88" fill="#cdd6f4">marriages</text><rect x="35" y="55" width="125" height="55" rx="8" fill="#1e1e2e" stroke="#a6e3a1"/><text x="70" y="88" fill="#cdd6f4">c1</text><rect x="400" y="55" width="125" height="55" rx="8" fill="#1e1e2e" stroke="#f38ba8"/><text x="435" y="88" fill="#cdd6f4">c2</text><path d="M200 82 H160" stroke="#a6e3a1" stroke-width="3"/><path d="M350 82 H400" stroke="#f38ba8" stroke-width="3"/></svg>
+    <p>Без алиасов база не поймёт, к какому экземпляру characters относится колонка name.</p>
+    <p><code>JOIN characters AS c1 ON m.character1_id = c1.id JOIN characters AS c2 ON m.character2_id = c2.id</code></p>
+    <div style="border-left: 3px solid #89b4fa; padding-left: 12px;">Запомни: self-join всегда требует понятных алиасов для каждой роли таблицы.</div>
+  </div>

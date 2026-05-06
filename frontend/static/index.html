@@ -589,7 +589,7 @@
         currentTask = await requestJson(`/api/v1/tasks/${taskId}`);
         titleEl.textContent = currentTask.title;
         descriptionEl.textContent = currentTask.description;
-        theoryEl.textContent = currentTask.theory || "Теория для задания пока не добавлена.";
+        theoryEl.innerHTML = currentTask.theory || "Теория для задания пока не добавлена.";
         revealedHints = 0;
         renderHints();
         setEditorValue("");

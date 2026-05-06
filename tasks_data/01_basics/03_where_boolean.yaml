@@ -1,0 +1,98 @@
+id: 3
+topic: basics
+difficulty: 1
+title: "Только великие дома"
+description: |
+  Используй таблицу houses.
+
+  Задача: выбери name и region всех домов, где is_great = true.
+  Порядок строк не важен.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'Старк',      'Зима близко',                         'Север',            true),
+      (2, 'Ланнистер',  'Слышишь мой рёв',                     'Запад',            true),
+      (3, 'Таргариен',  'Огонь и кровь',                       'Драконий Камень',  true),
+      (4, 'Баратеон',   'Наша — ярость',                       'Штормовые Земли',  true),
+      (5, 'Тирелл',     'Растём в силе',                       'Простор',          true),
+      (6, 'Мартелл',    'Несломленный, непогнутый, несогнувшийся', 'Дорн',         true),
+      (7, 'Аррен',      'Высоко, как честь',                   'Долина Аррен',     true),
+      (8, 'Болтон',     'Наш нож всегда острее',               'Север',            false);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд',            35, false),
+      (2,  'Джон Сноу',           1, 'Лорд',            17, true),
+      (3,  'Арья Старк',          1, 'Леди',            11, true),
+      (4,  'Санса Старк',         1, 'Леди',            14, true),
+      (5,  'Тирион Ланнистер',    2, 'Лорд',            32, true),
+      (6,  'Серсея Ланнистер',    2, 'Королева',        34, true),
+      (7,  'Джейме Ланнистер',    2, 'Сир',             36, true),
+      (8,  'Дейенерис Таргариен', 3, 'Королева',        16, true),
+      (9,  'Визерис Таргариен',   3, 'Принц',           22, false),
+      (10, 'Джоффри Баратеон',    4, 'Король',          13, false),
+      (11, 'Станнис Баратеон',    4, 'Лорд',            48, false),
+      (12, 'Маргери Тирелл',      5, 'Королева',        15, false),
+      (13, 'Оберин Мартелл',      6, 'Принц',           42, false),
+      (14, 'Лиза Аррен',          7, 'Леди',            33, false),
+      (15, 'Рамси Болтон',        8, 'Лорд',            25, false);
+solution: SELECT name, region FROM houses WHERE is_great = true
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Для фильтрации строк используй WHERE после FROM"
+  - "Условие проверяет булево поле: is_great = true"
+  - "Синтаксис: SELECT name, region FROM houses WHERE is_great = true"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">Оператор WHERE</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">WHERE</code> фильтрует строки: в результат попадают только те, для которых условие равно <strong>true</strong>.
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">SELECT name, region
+  FROM houses
+  WHERE is_great = true;</pre>
+  <svg viewBox="0 0 400 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="160" rx="6" fill="#1e1e2e"/>
+    <text x="16" y="24" fill="#cdd6f4" font-size="9" font-family="monospace">Все 8 строк (is_great = ?)</text>
+    <rect x="8" y="30" width="170" height="14" fill="#313244" rx="2"/>
+    <text x="14" y="41" fill="#a6e3a1" font-size="9" font-family="monospace">Старк       true  ✓</text>
+    <rect x="8" y="46" width="170" height="14" fill="#313244" rx="2"/>
+    <text x="14" y="57" fill="#a6e3a1" font-size="9" font-family="monospace">Ланнистер   true  ✓</text>
+    <rect x="8" y="62" width="170" height="14" fill="#313244" rx="2"/>
+    <text x="14" y="73" fill="#a6e3a1" font-size="9" font-family="monospace">Таргариен   true  ✓</text>
+    <rect x="8" y="78" width="170" height="14" fill="#313244" rx="2"/>
+    <text x="14" y="89" fill="#a6e3a1" font-size="9" font-family="monospace">Баратеон    true  ✓</text>
+    <rect x="8" y="94" width="170" height="14" fill="#313244" rx="2"/>
+    <text x="14" y="105" fill="#585b70" font-size="9" font-family="monospace">... ещё 3 great ...</text>
+    <rect x="8" y="110" width="170" height="14" fill="#313244" rx="2"/>
+    <text x="14" y="121" fill="#f38ba8" font-size="9" font-family="monospace">Болтон      false ✗ ← не пройдёт</text>
+    <text x="188" y="82" fill="#89b4fa" font-size="22">→</text>
+    <text x="183" y="100" fill="#89b4fa" font-size="7.5" font-family="monospace" text-anchor="middle">WHERE is_great</text>
+    <text x="183" y="111" fill="#89b4fa" font-size="7.5" font-family="monospace" text-anchor="middle">= true</text>
+    <text x="222" y="24" fill="#cdd6f4" font-size="9" font-family="monospace">Результат (7 строк)</text>
+    <rect x="214" y="30" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="220" y="41" fill="#a6e3a1" font-size="9" font-family="monospace">Старк        Север</text>
+    <rect x="214" y="46" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="220" y="57" fill="#a6e3a1" font-size="9" font-family="monospace">Ланнистер    Запад</text>
+    <rect x="214" y="62" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="220" y="73" fill="#a6e3a1" font-size="9" font-family="monospace">Таргариен    Драконий Камень</text>
+    <text x="303" y="100" text-anchor="middle" fill="#585b70" font-size="9">... и ещё 4 ...</text>
+    <text x="303" y="140" text-anchor="middle" fill="#f38ba8" font-size="9">Болтон отфильтрован (is_great = false)</text>
+  </svg>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Запомни:</strong>
+    <span style="color:#cdd6f4"> Порядок операторов: <code>SELECT → FROM → WHERE</code>. При выполнении PostgreSQL сначала читает таблицу, затем фильтрует, затем выбирает колонки.</span>
+  </div>

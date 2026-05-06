@@ -1,39 +1,103 @@
 id: 1
 topic: basics
 difficulty: 1
-title: "Выбрать всех сотрудников"
+title: "Все дома Вестероса"
 description: |
-  В таблице employees хранятся данные о сотрудниках компании.
+  В базе данных хранятся сведения о мире «Игры престолов».
 
-  Структура таблицы:
-  - id (INTEGER) — уникальный идентификатор
-  - name (TEXT) — имя сотрудника
-  - department (TEXT) — отдел
-  - salary (NUMERIC) — зарплата
+  Таблица houses — великие и малые дома:
+    id (INTEGER)      — уникальный номер дома
+    name (TEXT)       — название дома
+    words (TEXT)      — девиз дома
+    region (TEXT)     — регион Вестероса
+    is_great (BOOLEAN)— true, если дом является великим
 
-  Выбери все строки и все колонки из таблицы employees.
+  Таблица characters — персонажи:
+    id, name, house_id, title, age, is_alive
+
+  Задача: выбери все строки и все колонки из таблицы houses.
 schema_setup: |
-  CREATE TABLE employees (
-      id INTEGER,
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
       name TEXT,
-      department TEXT,
-      salary NUMERIC
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
   );
-  INSERT INTO employees VALUES
-      (1, 'Иван Петров', 'Разработка', 90000),
-      (2, 'Мария Сидорова', 'Маркетинг', 75000),
-      (3, 'Алексей Козлов', 'Разработка', 120000),
-      (4, 'Ольга Новикова', 'HR', 65000),
-      (5, 'Дмитрий Морозов', 'Маркетинг', 80000);
-solution: |
-  SELECT * FROM employees;
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'Старк',      'Зима близко',                         'Север',            true),
+      (2, 'Ланнистер',  'Слышишь мой рёв',                     'Запад',            true),
+      (3, 'Таргариен',  'Огонь и кровь',                       'Драконий Камень',  true),
+      (4, 'Баратеон',   'Наша — ярость',                       'Штормовые Земли',  true),
+      (5, 'Тирелл',     'Растём в силе',                       'Простор',          true),
+      (6, 'Мартелл',    'Несломленный, непогнутый, несогнувшийся', 'Дорн',         true),
+      (7, 'Аррен',      'Высоко, как честь',                   'Долина Аррен',     true),
+      (8, 'Болтон',     'Наш нож всегда острее',               'Север',            false);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд',            35, false),
+      (2,  'Джон Сноу',           1, 'Лорд',            17, true),
+      (3,  'Арья Старк',          1, 'Леди',            11, true),
+      (4,  'Санса Старк',         1, 'Леди',            14, true),
+      (5,  'Тирион Ланнистер',    2, 'Лорд',            32, true),
+      (6,  'Серсея Ланнистер',    2, 'Королева',        34, true),
+      (7,  'Джейме Ланнистер',    2, 'Сир',             36, true),
+      (8,  'Дейенерис Таргариен', 3, 'Королева',        16, true),
+      (9,  'Визерис Таргариен',   3, 'Принц',           22, false),
+      (10, 'Джоффри Баратеон',    4, 'Король',          13, false),
+      (11, 'Станнис Баратеон',    4, 'Лорд',            48, false),
+      (12, 'Маргери Тирелл',      5, 'Королева',        15, false),
+      (13, 'Оберин Мартелл',      6, 'Принц',           42, false),
+      (14, 'Лиза Аррен',          7, 'Леди',            33, false),
+      (15, 'Рамси Болтон',        8, 'Лорд',            25, false);
+solution: SELECT * FROM houses
 check:
   ordered: false
   columns_strict: true
 hints:
-  - "Используй оператор SELECT для выборки данных"
-  - "Символ * означает «все колонки»"
+  - "Для чтения данных используй оператор SELECT"
+  - "Символ * выбирает все колонки. Укажи таблицу через FROM"
+  - "Полный синтаксис: SELECT * FROM houses"
 theory: |
-  SELECT — основная команда для чтения данных из таблицы.
-  Синтаксис: SELECT <колонки> FROM <таблица>;
-  Символ * выбирает все колонки таблицы.
+  <h3 style="color:#89b4fa;margin:0 0 8px">Команда SELECT</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">SELECT</code> читает строки из таблицы.
+    Символ <code style="color:#a6e3a1">*</code> означает «все колонки без исключения».
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">SELECT * FROM houses;</pre>
+  <svg viewBox="0 0 400 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="148" rx="6" fill="#1e1e2e"/>
+    <rect x="8" y="8" width="168" height="132" rx="4" fill="#313244" stroke="#45475a" stroke-width="1"/>
+    <rect x="8" y="8" width="168" height="20" rx="4" fill="#45475a"/>
+    <text x="92" y="22" text-anchor="middle" fill="#89b4fa" font-size="10" font-family="monospace" font-weight="bold">houses</text>
+    <rect x="8" y="29" width="168" height="14" fill="#2a2a3e"/>
+    <text x="16" y="40" fill="#cdd6f4" font-size="9" font-family="monospace">id  name       region     is_great</text>
+    <text x="16" y="56" fill="#a6e3a1" font-size="9" font-family="monospace"> 1  Старк      Север      true</text>
+    <text x="16" y="70" fill="#a6e3a1" font-size="9" font-family="monospace"> 2  Ланнистер  Запад      true</text>
+    <text x="16" y="84" fill="#a6e3a1" font-size="9" font-family="monospace"> 3  Таргариен  Д.Камень   true</text>
+    <text x="16" y="98" fill="#a6e3a1" font-size="9" font-family="monospace"> 4  Баратеон   Шт.Земли   true</text>
+    <text x="92" y="122" text-anchor="middle" fill="#585b70" font-size="9" font-family="monospace">... ещё 4 строки ...</text>
+    <text x="188" y="76" fill="#89b4fa" font-size="22">→</text>
+    <text x="184" y="93" fill="#89b4fa" font-size="8" font-family="monospace" text-anchor="middle">SELECT *</text>
+    <rect x="214" y="8" width="178" height="132" rx="4" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
+    <rect x="214" y="8" width="178" height="20" rx="4" fill="#45475a"/>
+    <text x="303" y="22" text-anchor="middle" fill="#a6e3a1" font-size="10" font-family="monospace" font-weight="bold">результат</text>
+    <rect x="214" y="29" width="178" height="14" fill="#2a2a3e"/>
+    <text x="222" y="40" fill="#cdd6f4" font-size="9" font-family="monospace">id  name       region     is_great</text>
+    <text x="222" y="56" fill="#a6e3a1" font-size="9" font-family="monospace"> 1  Старк      Север      true</text>
+    <text x="222" y="70" fill="#a6e3a1" font-size="9" font-family="monospace"> 2  Ланнистер  Запад      true</text>
+    <text x="222" y="84" fill="#a6e3a1" font-size="9" font-family="monospace"> 3  Таргариен  Д.Камень   true</text>
+    <text x="222" y="98" fill="#a6e3a1" font-size="9" font-family="monospace"> 4  Баратеон   Шт.Земли   true</text>
+    <text x="303" y="122" text-anchor="middle" fill="#a6e3a1" font-size="9" font-family="monospace">все 8 строк × 5 колонок</text>
+  </svg>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Запомни:</strong>
+    <span style="color:#cdd6f4"> <code>SELECT *</code> удобен при изучении данных, но в реальных проектах лучше перечислять нужные колонки явно — это делает запрос быстрее и понятнее.</span>
+  </div>
