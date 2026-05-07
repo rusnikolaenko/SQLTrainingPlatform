@@ -1,0 +1,160 @@
+id: 25
+topic: subqueries
+difficulty: 3
+title: "Персонажи из самого большого дома"
+description: |
+  Используй таблицы characters и houses.
+
+  Задача: выбери name всех персонажей, принадлежащих
+  к дому с наибольшим количеством членов.
+  Используй подзапрос в WHERE.
+  Порядок строк не важен.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT, words TEXT, region TEXT, is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT, house_id INTEGER REFERENCES houses(id),
+      title TEXT, age INTEGER, is_alive BOOLEAN
+  );
+  CREATE TABLE battles (
+      id INTEGER PRIMARY KEY,
+      name TEXT, year INTEGER,
+      attacker_house_id INTEGER REFERENCES houses(id),
+      defender_house_id INTEGER REFERENCES houses(id),
+      winner_house_id  INTEGER REFERENCES houses(id),
+      location TEXT
+  );
+  CREATE TABLE marriages (
+      id INTEGER PRIMARY KEY,
+      character1_id INTEGER REFERENCES characters(id),
+      character2_id INTEGER REFERENCES characters(id),
+      year INTEGER, location TEXT
+  );
+  CREATE TABLE dragon_sightings (
+      id INTEGER PRIMARY KEY,
+      dragon_name TEXT, location TEXT, year INTEGER,
+      witness_id INTEGER REFERENCES characters(id)
+  );
+  INSERT INTO houses VALUES
+      (1,  'Дом Старков',      'Зима близко',                               'Север',             TRUE),
+      (2,  'Дом Ланнистеров',  'Услышь мой рёв',                            'Западные земли',    TRUE),
+      (3,  'Дом Таргариенов',  'Пламя и кровь',                             'Драконий Камень',   TRUE),
+      (4,  'Дом Баратеонов',   'Нам ярость',                                'Штормовые земли',   TRUE),
+      (5,  'Дом Грейджоев',    'Мы не сеем',                                'Железные острова',  TRUE),
+      (6,  'Дом Тиреллов',     'Вырастая — крепнем',                        'Простор',           TRUE),
+      (7,  'Дом Мартеллов',    'Непокорённые, несгибаемые, несломленные',   'Дорн',              TRUE),
+      (8,  'Дом Талли',        'Семья, долг, честь',                        'Речные земли',      TRUE),
+      (9,  'Дом Болтонов',     'Наши клинки остры',                         'Север',             FALSE),
+      (10, 'Дом Рейнов',       'Долгая и острая память',                    'Западные земли',    FALSE);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд Винтерфелла',        35, FALSE),
+      (2,  'Кейтилин Старк',      1, 'Леди Винтерфелла',        34, FALSE),
+      (3,  'Робб Старк',          1, 'Король Севера',            16, FALSE),
+      (4,  'Санса Старк',         1, 'Леди Винтерфелла',        13, TRUE),
+      (5,  'Арья Старк',          1, NULL,                       11, TRUE),
+      (6,  'Тирион Ланнистер',    2, 'Десница королевы',        24, TRUE),
+      (7,  'Серсея Ланнистер',    2, 'Королева',                34, FALSE),
+      (8,  'Джейме Ланнистер',    2, 'Лорд-командующий',        32, TRUE),
+      (9,  'Тайвин Ланнистер',    2, 'Лорд Утёса Кастерли',    58, FALSE),
+      (10, 'Дейенерис Таргариен', 3, 'Королева Миэрина',        16, TRUE),
+      (11, 'Визерис Таргариен',   3, 'Принц',                   22, FALSE),
+      (12, 'Роберт Баратеон',     4, 'Король',                  36, FALSE),
+      (13, 'Станнис Баратеон',    4, 'Лорд Драконьего Камня',   34, FALSE),
+      (14, 'Ренли Баратеон',      4, 'Лорд Штормового Предела', 21, FALSE),
+      (15, 'Джоффри Баратеон',    4, 'Король',                  13, FALSE),
+      (16, 'Теон Грейджой',       5, 'Наследник Пайка',         19, TRUE),
+      (17, 'Маргери Тирелл',      6, 'Королева',                16, FALSE),
+      (18, 'Оленна Тирелл',       6, 'Леди Хайгардена',         70, FALSE),
+      (19, 'Оберин Мартелл',      7, 'Принц Дорна',             42, FALSE),
+      (20, 'Эллария Сэнд',        7, NULL,                       35, TRUE),
+      (21, 'Эдмар Талли',         8, 'Лорд Риверрана',          30, TRUE),
+      (22, 'Русе Болтон',         9, 'Лорд Дредфорта',          45, FALSE),
+      (23, 'Рамси Болтон',        9, 'Лорд Винтерфелла',        20, FALSE),
+      (24, 'Бронн',            NULL, 'Наёмник',                  30, TRUE),
+      (25, 'Кхал Дрого',       NULL, 'Кхал',                     30, FALSE);
+  INSERT INTO battles VALUES
+      (1,  'Битва в Шепчущем лесу',           299, 1, 2, 1, 'Речные земли'),
+      (2,  'Битва у Черноводной',              299, 4, 2, 2, 'Королевская Гавань'),
+      (3,  'Захват Винтерфелла',               299, 9, 1, 9, 'Винтерфелл'),
+      (4,  'Битва при Окскроссе',              299, 1, 2, 1, 'Западные земли'),
+      (5,  'Осада Риверрана',                  300, 2, 8, 2, 'Риверран'),
+      (6,  'Битва бастардов',                  303, 1, 9, 1, 'Винтерфелл'),
+      (7,  'Нападение на обоз Ланнистеров',    304, 3, 2, 3, 'Простор'),
+      (8,  'Восстание Грейджоя',               289, 5, 4, 4, 'Пайк'),
+      (9,  'Битва на Зелёном Зубце',           298, 2, 1, 2, 'Речные земли'),
+      (10, 'Падение Хайгардена',               304, 2, 6, 2, 'Хайгарден');
+  INSERT INTO marriages VALUES
+      (1, 1,  2,  282, 'Риверран'),
+      (2, 6,  4,  299, 'Королевская Гавань'),
+      (3, 12, 7,  284, 'Королевская Гавань'),
+      (4, 17, 14, 298, 'Штормовой Предел'),
+      (5, 17, 15, 300, 'Королевская Гавань'),
+      (6, 4,  23, 302, 'Винтерфелл'),
+      (7, 10, 25, 298, 'Дотракийское море'),
+      (8, 19, 20, 295, 'Солнечное Копьё');
+  INSERT INTO dragon_sightings VALUES
+      (1,  'Дрогон',   'Эссос',               298, 10),
+      (2,  'Визерион', 'Дотракийское море',    298, 25),
+      (3,  'Рейгаль',  'Драконий Камень',      300, 13),
+      (4,  'Дрогон',   'Миэрин',              301,  6),
+      (5,  'Дрогон',   'Простор',             304, 17),
+      (6,  'Визерион', 'Стена',               307,  5),
+      (7,  'Рейгаль',  'Винтерфелл',          307,  4),
+      (8,  'Дрогон',   'Королевская Гавань',  305,  7),
+      (9,  'Визерион', 'Пайк',                302, 16),
+      (10, 'Рейгаль',  'Дорн',                303, 19);
+solution: |
+  SELECT name FROM characters
+  WHERE house_id = (
+      SELECT house_id FROM characters
+      WHERE house_id IS NOT NULL
+      GROUP BY house_id
+      ORDER BY COUNT(*) DESC
+      LIMIT 1
+  )
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Сначала найди house_id дома с наибольшим числом членов — это подзапрос с GROUP BY и ORDER BY COUNT(*) DESC LIMIT 1"
+  - "Подзапрос возвращает одно значение, поэтому используй = (не IN)"
+  - "Синтаксис: WHERE house_id = (SELECT house_id FROM characters WHERE house_id IS NOT NULL GROUP BY house_id ORDER BY COUNT(*) DESC LIMIT 1)"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">Подзапрос в WHERE</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    Подзапрос — это SELECT внутри другого SELECT.
+    PostgreSQL выполняет внутренний запрос <strong>первым</strong>, подставляет результат во внешнее условие.
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">SELECT name FROM characters
+  WHERE house_id = (          -- внешний запрос
+      SELECT house_id         -- внутренний (подзапрос)
+      FROM characters
+      WHERE house_id IS NOT NULL
+      GROUP BY house_id
+      ORDER BY COUNT(*) DESC
+      LIMIT 1
+  );</pre>
+  <svg viewBox="0 0 420 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:420px;display:block;margin:0 0 12px">
+    <rect width="420" height="180" rx="6" fill="#1e1e2e"/>
+    <rect x="8" y="8" width="404" height="164" rx="4" fill="#313244" stroke="#89b4fa" stroke-width="1.5"/>
+    <text x="20" y="28" fill="#89b4fa" font-size="10" font-family="monospace" font-weight="bold">① Внешний запрос</text>
+    <text x="20" y="46" fill="#cdd6f4" font-size="10" font-family="monospace">SELECT name FROM characters WHERE house_id = ?</text>
+    <rect x="32" y="56" width="372" height="96" rx="4" fill="#1e1e2e" stroke="#a6e3a1" stroke-width="1.5"/>
+    <text x="44" y="75" fill="#a6e3a1" font-size="10" font-family="monospace" font-weight="bold">② Подзапрос — выполняется первым</text>
+    <text x="44" y="93" fill="#cdd6f4" font-size="10" font-family="monospace">SELECT house_id FROM characters</text>
+    <text x="44" y="109" fill="#cdd6f4" font-size="10" font-family="monospace">WHERE house_id IS NOT NULL</text>
+    <text x="44" y="125" fill="#cdd6f4" font-size="10" font-family="monospace">GROUP BY house_id ORDER BY COUNT(*) DESC LIMIT 1</text>
+    <text x="44" y="143" fill="#fab387" font-size="10" font-family="monospace">→ возвращает: 1  (Дом Старков — 5 членов)</text>
+    <text x="20" y="162" fill="#89b4fa" font-size="10" font-family="monospace">→ WHERE house_id = 1  →  5 персонажей Старков</text>
+  </svg>
+  <div style="border-left:3px solid #f38ba8;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0;margin:0 0 10px">
+    <strong style="color:#f38ba8">Когда = вместо IN:</strong>
+    <span style="color:#cdd6f4"> Если подзапрос гарантированно возвращает <em>одну строку</em> (LIMIT 1, агрегат без GROUP BY), используй <code>=</code>. Если может вернуть несколько — используй <code>IN</code>.</span>
+  </div>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Порядок выполнения:</strong>
+    <span style="color:#cdd6f4"> сначала подзапрос, потом внешний. Это не рекурсия — подзапрос не видит строки внешнего запроса (если только он не коррелированный).</span>
+  </div>

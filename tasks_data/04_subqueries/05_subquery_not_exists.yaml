@@ -1,0 +1,157 @@
+id: 29
+topic: subqueries
+difficulty: 4
+title: "Персонажи, никогда не видевшие дракона"
+description: |
+  Используй таблицы characters и dragon_sightings.
+
+  Задача: выбери name всех персонажей, которые ни разу
+  не были свидетелями появления дракона.
+  Используй оператор NOT EXISTS.
+  Порядок строк не важен.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT, words TEXT, region TEXT, is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT, house_id INTEGER REFERENCES houses(id),
+      title TEXT, age INTEGER, is_alive BOOLEAN
+  );
+  CREATE TABLE battles (
+      id INTEGER PRIMARY KEY,
+      name TEXT, year INTEGER,
+      attacker_house_id INTEGER REFERENCES houses(id),
+      defender_house_id INTEGER REFERENCES houses(id),
+      winner_house_id  INTEGER REFERENCES houses(id),
+      location TEXT
+  );
+  CREATE TABLE marriages (
+      id INTEGER PRIMARY KEY,
+      character1_id INTEGER REFERENCES characters(id),
+      character2_id INTEGER REFERENCES characters(id),
+      year INTEGER, location TEXT
+  );
+  CREATE TABLE dragon_sightings (
+      id INTEGER PRIMARY KEY,
+      dragon_name TEXT, location TEXT, year INTEGER,
+      witness_id INTEGER REFERENCES characters(id)
+  );
+  INSERT INTO houses VALUES
+      (1,  'Дом Старков',      'Зима близко',                               'Север',             TRUE),
+      (2,  'Дом Ланнистеров',  'Услышь мой рёв',                            'Западные земли',    TRUE),
+      (3,  'Дом Таргариенов',  'Пламя и кровь',                             'Драконий Камень',   TRUE),
+      (4,  'Дом Баратеонов',   'Нам ярость',                                'Штормовые земли',   TRUE),
+      (5,  'Дом Грейджоев',    'Мы не сеем',                                'Железные острова',  TRUE),
+      (6,  'Дом Тиреллов',     'Вырастая — крепнем',                        'Простор',           TRUE),
+      (7,  'Дом Мартеллов',    'Непокорённые, несгибаемые, несломленные',   'Дорн',              TRUE),
+      (8,  'Дом Талли',        'Семья, долг, честь',                        'Речные земли',      TRUE),
+      (9,  'Дом Болтонов',     'Наши клинки остры',                         'Север',             FALSE),
+      (10, 'Дом Рейнов',       'Долгая и острая память',                    'Западные земли',    FALSE);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд Винтерфелла',        35, FALSE),
+      (2,  'Кейтилин Старк',      1, 'Леди Винтерфелла',        34, FALSE),
+      (3,  'Робб Старк',          1, 'Король Севера',            16, FALSE),
+      (4,  'Санса Старк',         1, 'Леди Винтерфелла',        13, TRUE),
+      (5,  'Арья Старк',          1, NULL,                       11, TRUE),
+      (6,  'Тирион Ланнистер',    2, 'Десница королевы',        24, TRUE),
+      (7,  'Серсея Ланнистер',    2, 'Королева',                34, FALSE),
+      (8,  'Джейме Ланнистер',    2, 'Лорд-командующий',        32, TRUE),
+      (9,  'Тайвин Ланнистер',    2, 'Лорд Утёса Кастерли',    58, FALSE),
+      (10, 'Дейенерис Таргариен', 3, 'Королева Миэрина',        16, TRUE),
+      (11, 'Визерис Таргариен',   3, 'Принц',                   22, FALSE),
+      (12, 'Роберт Баратеон',     4, 'Король',                  36, FALSE),
+      (13, 'Станнис Баратеон',    4, 'Лорд Драконьего Камня',   34, FALSE),
+      (14, 'Ренли Баратеон',      4, 'Лорд Штормового Предела', 21, FALSE),
+      (15, 'Джоффри Баратеон',    4, 'Король',                  13, FALSE),
+      (16, 'Теон Грейджой',       5, 'Наследник Пайка',         19, TRUE),
+      (17, 'Маргери Тирелл',      6, 'Королева',                16, FALSE),
+      (18, 'Оленна Тирелл',       6, 'Леди Хайгардена',         70, FALSE),
+      (19, 'Оберин Мартелл',      7, 'Принц Дорна',             42, FALSE),
+      (20, 'Эллария Сэнд',        7, NULL,                       35, TRUE),
+      (21, 'Эдмар Талли',         8, 'Лорд Риверрана',          30, TRUE),
+      (22, 'Русе Болтон',         9, 'Лорд Дредфорта',          45, FALSE),
+      (23, 'Рамси Болтон',        9, 'Лорд Винтерфелла',        20, FALSE),
+      (24, 'Бронн',            NULL, 'Наёмник',                  30, TRUE),
+      (25, 'Кхал Дрого',       NULL, 'Кхал',                     30, FALSE);
+  INSERT INTO battles VALUES
+      (1,  'Битва в Шепчущем лесу',           299, 1, 2, 1, 'Речные земли'),
+      (2,  'Битва у Черноводной',              299, 4, 2, 2, 'Королевская Гавань'),
+      (3,  'Захват Винтерфелла',               299, 9, 1, 9, 'Винтерфелл'),
+      (4,  'Битва при Окскроссе',              299, 1, 2, 1, 'Западные земли'),
+      (5,  'Осада Риверрана',                  300, 2, 8, 2, 'Риверран'),
+      (6,  'Битва бастардов',                  303, 1, 9, 1, 'Винтерфелл'),
+      (7,  'Нападение на обоз Ланнистеров',    304, 3, 2, 3, 'Простор'),
+      (8,  'Восстание Грейджоя',               289, 5, 4, 4, 'Пайк'),
+      (9,  'Битва на Зелёном Зубце',           298, 2, 1, 2, 'Речные земли'),
+      (10, 'Падение Хайгардена',               304, 2, 6, 2, 'Хайгарден');
+  INSERT INTO marriages VALUES
+      (1, 1,  2,  282, 'Риверран'),
+      (2, 6,  4,  299, 'Королевская Гавань'),
+      (3, 12, 7,  284, 'Королевская Гавань'),
+      (4, 17, 14, 298, 'Штормовой Предел'),
+      (5, 17, 15, 300, 'Королевская Гавань'),
+      (6, 4,  23, 302, 'Винтерфелл'),
+      (7, 10, 25, 298, 'Дотракийское море'),
+      (8, 19, 20, 295, 'Солнечное Копьё');
+  INSERT INTO dragon_sightings VALUES
+      (1,  'Дрогон',   'Эссос',               298, 10),
+      (2,  'Визерион', 'Дотракийское море',    298, 25),
+      (3,  'Рейгаль',  'Драконий Камень',      300, 13),
+      (4,  'Дрогон',   'Миэрин',              301,  6),
+      (5,  'Дрогон',   'Простор',             304, 17),
+      (6,  'Визерион', 'Стена',               307,  5),
+      (7,  'Рейгаль',  'Винтерфелл',          307,  4),
+      (8,  'Дрогон',   'Королевская Гавань',  305,  7),
+      (9,  'Визерион', 'Пайк',                302, 16),
+      (10, 'Рейгаль',  'Дорн',                303, 19);
+solution: |
+  SELECT name FROM characters
+  WHERE NOT EXISTS (
+      SELECT 1 FROM dragon_sightings WHERE witness_id = characters.id
+  )
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "NOT EXISTS — отрицание EXISTS: выбери персонажей, для которых нет совпадений в dragon_sightings"
+  - "Подзапрос: SELECT 1 FROM dragon_sightings WHERE witness_id = characters.id"
+  - "Синтаксис: WHERE NOT EXISTS (SELECT 1 FROM dragon_sightings WHERE witness_id = characters.id)"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">NOT EXISTS — надёжная альтернатива NOT IN</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">NOT EXISTS</code> возвращает TRUE, если подзапрос
+    не вернул <em>ни одной</em> строки. В отличие от NOT IN, он корректно работает с NULL.
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">SELECT name FROM characters
+  WHERE NOT EXISTS (
+      SELECT 1 FROM dragon_sightings
+      WHERE witness_id = characters.id
+  );</pre>
+  <svg viewBox="0 0 420 130" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:420px;display:block;margin:0 0 12px">
+    <rect width="420" height="130" rx="6" fill="#1e1e2e"/>
+    <text x="16" y="20" fill="#cdd6f4" font-size="10" font-family="monospace" font-weight="bold">NOT IN vs NOT EXISTS при NULL</text>
+    <rect x="8" y="28" width="196" height="90" rx="3" fill="#3a2a2a" stroke="#f38ba8" stroke-width="1"/>
+    <text x="16" y="44" fill="#f38ba8" font-size="9" font-family="monospace" font-weight="bold">NOT IN — опасно с NULL:</text>
+    <text x="16" y="58" fill="#cdd6f4" font-size="9" font-family="monospace">WHERE id NOT IN (</text>
+    <text x="16" y="72" fill="#cdd6f4" font-size="9" font-family="monospace">  SELECT witness_id FROM ds</text>
+    <text x="16" y="86" fill="#cdd6f4" font-size="9" font-family="monospace">)</text>
+    <text x="16" y="100" fill="#f38ba8" font-size="9" font-family="monospace">Если witness_id = NULL → пусто!</text>
+    <text x="16" y="114" fill="#585b70" font-size="9" font-family="monospace">(NULL в нашем DS нет, но риск есть)</text>
+    <rect x="216" y="28" width="196" height="90" rx="3" fill="#2a3a2a" stroke="#a6e3a1" stroke-width="1"/>
+    <text x="224" y="44" fill="#a6e3a1" font-size="9" font-family="monospace" font-weight="bold">NOT EXISTS — безопасно:</text>
+    <text x="224" y="58" fill="#cdd6f4" font-size="9" font-family="monospace">WHERE NOT EXISTS (</text>
+    <text x="224" y="72" fill="#cdd6f4" font-size="9" font-family="monospace">  SELECT 1 FROM ds</text>
+    <text x="224" y="86" fill="#cdd6f4" font-size="9" font-family="monospace">  WHERE witness_id = c.id</text>
+    <text x="224" y="100" fill="#cdd6f4" font-size="9" font-family="monospace">)</text>
+    <text x="224" y="114" fill="#a6e3a1" font-size="9" font-family="monospace">NULL не влияет на результат ✓</text>
+  </svg>
+  <div style="border-left:3px solid #a6e3a1;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0;margin:0 0 10px">
+    <strong style="color:#a6e3a1">Почему NOT EXISTS безопасен:</strong>
+    <span style="color:#cdd6f4"> EXISTS проверяет только факт наличия строк, а не значения. Даже если подзапрос возвращает NULL-строки, EXISTS их учитывает как «существующие», а NOT EXISTS — как «отсутствующие».</span>
+  </div>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Правило:</strong>
+    <span style="color:#cdd6f4"> Предпочитай NOT EXISTS вместо NOT IN всякий раз, когда столбец в подзапросе может содержать NULL.</span>
+  </div>

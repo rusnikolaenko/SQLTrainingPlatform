@@ -1,0 +1,161 @@
+id: 17
+topic: aggregates
+difficulty: 2
+title: "Сколько персонажей в каждом доме"
+description: |
+  Используй таблицы houses и characters.
+
+  Задача: для каждого дома выведи название и количество
+  принадлежащих ему персонажей, включая дома без персонажей (0).
+  Отсортируй по убыванию числа персонажей, затем по названию дома по возрастанию.
+  Колонки результата: house_name, character_count.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT, words TEXT, region TEXT, is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT, house_id INTEGER REFERENCES houses(id),
+      title TEXT, age INTEGER, is_alive BOOLEAN
+  );
+  CREATE TABLE battles (
+      id INTEGER PRIMARY KEY,
+      name TEXT, year INTEGER,
+      attacker_house_id INTEGER REFERENCES houses(id),
+      defender_house_id INTEGER REFERENCES houses(id),
+      winner_house_id  INTEGER REFERENCES houses(id),
+      location TEXT
+  );
+  CREATE TABLE marriages (
+      id INTEGER PRIMARY KEY,
+      character1_id INTEGER REFERENCES characters(id),
+      character2_id INTEGER REFERENCES characters(id),
+      year INTEGER, location TEXT
+  );
+  INSERT INTO houses VALUES
+      (1,  'Дом Старков',     'Зима близко',                             'Север',            TRUE),
+      (2,  'Дом Ланнистеров', 'Услышь мой рёв',                          'Западные земли',   TRUE),
+      (3,  'Дом Таргариенов', 'Пламя и кровь',                           'Драконий Камень',  TRUE),
+      (4,  'Дом Баратеонов',  'Нам ярость',                              'Штормовые земли',  TRUE),
+      (5,  'Дом Грейджоев',   'Мы не сеем',                              'Железные острова', TRUE),
+      (6,  'Дом Тиреллов',    'Вырастая — крепнем',                      'Простор',          TRUE),
+      (7,  'Дом Мартеллов',   'Непокорённые, несгибаемые, несломленные', 'Дорн',             TRUE),
+      (8,  'Дом Талли',       'Семья, долг, честь',                      'Речные земли',     TRUE),
+      (9,  'Дом Болтонов',    'Наши клинки остры',                       'Север',            FALSE),
+      (10, 'Дом Рейнов',      'Долгая и острая память',                  'Западные земли',   FALSE);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд Винтерфелла',        35, FALSE),
+      (2,  'Кейтилин Старк',      1, 'Леди Винтерфелла',        34, FALSE),
+      (3,  'Робб Старк',          1, 'Король Севера',            16, FALSE),
+      (4,  'Санса Старк',         1, 'Леди Винтерфелла',        13, TRUE),
+      (5,  'Арья Старк',          1, NULL,                       11, TRUE),
+      (6,  'Тирион Ланнистер',    2, 'Десница королевы',        24, TRUE),
+      (7,  'Серсея Ланнистер',    2, 'Королева',                34, FALSE),
+      (8,  'Джейме Ланнистер',    2, 'Лорд-командующий',        32, TRUE),
+      (9,  'Тайвин Ланнистер',    2, 'Лорд Утёса Кастерли',    58, FALSE),
+      (10, 'Дейенерис Таргариен', 3, 'Королева Миэрина',        16, TRUE),
+      (11, 'Визерис Таргариен',   3, 'Принц',                   22, FALSE),
+      (12, 'Роберт Баратеон',     4, 'Король',                  36, FALSE),
+      (13, 'Станнис Баратеон',    4, 'Лорд Драконьего Камня',   34, FALSE),
+      (14, 'Ренли Баратеон',      4, 'Лорд Штормового Предела', 21, FALSE),
+      (15, 'Джоффри Баратеон',    4, 'Король',                  13, FALSE),
+      (16, 'Теон Грейджой',       5, 'Наследник Пайка',         19, TRUE),
+      (17, 'Маргери Тирелл',      6, 'Королева',                16, FALSE),
+      (18, 'Оленна Тирелл',       6, 'Леди Хайгардена',         70, FALSE),
+      (19, 'Оберин Мартелл',      7, 'Принц Дорна',             42, FALSE),
+      (20, 'Эллария Сэнд',        7, NULL,                       35, TRUE),
+      (21, 'Эдмар Талли',         8, 'Лорд Риверрана',          30, TRUE),
+      (22, 'Русе Болтон',         9, 'Лорд Дредфорта',          45, FALSE),
+      (23, 'Рамси Болтон',        9, 'Лорд Винтерфелла',        20, FALSE),
+      (24, 'Бронн',            NULL, 'Наёмник',                  30, TRUE),
+      (25, 'Кхал Дрого',       NULL, 'Кхал',                     30, FALSE);
+  INSERT INTO battles VALUES
+      (1,  'Битва в Шепчущем лесу',        299, 1, 2, 1, 'Речные земли'),
+      (2,  'Битва у Черноводной',           299, 4, 2, 2, 'Королевская Гавань'),
+      (3,  'Захват Винтерфелла',            299, 9, 1, 9, 'Винтерфелл'),
+      (4,  'Битва при Окскроссе',           299, 1, 2, 1, 'Западные земли'),
+      (5,  'Осада Риверрана',               300, 2, 8, 2, 'Риверран'),
+      (6,  'Битва бастардов',               303, 1, 9, 1, 'Винтерфелл'),
+      (7,  'Нападение на обоз Ланнистеров', 304, 3, 2, 3, 'Простор'),
+      (8,  'Восстание Грейджоя',            289, 5, 4, 4, 'Пайк'),
+      (9,  'Битва на Зелёном Зубце',        298, 2, 1, 2, 'Речные земли'),
+      (10, 'Падение Хайгардена',            304, 2, 6, 2, 'Хайгарден');
+  INSERT INTO marriages VALUES
+      (1, 1,  2,  282, 'Риверран'),
+      (2, 6,  4,  299, 'Королевская Гавань'),
+      (3, 12, 7,  284, 'Королевская Гавань'),
+      (4, 17, 14, 298, 'Штормовой Предел'),
+      (5, 17, 15, 300, 'Королевская Гавань'),
+      (6, 4,  23, 302, 'Винтерфелл'),
+      (7, 10, 25, 298, 'Дотракийское море'),
+      (8, 19, 20, 295, 'Солнечное Копьё');
+solution: |
+  SELECT h.name AS house_name, COUNT(c.id) AS character_count
+  FROM houses h
+  LEFT JOIN characters c ON c.house_id = h.id
+  GROUP BY h.id, h.name
+  ORDER BY character_count DESC, house_name ASC
+check:
+  ordered: true
+  columns_strict: true
+hints:
+  - "Используй LEFT JOIN, чтобы дома без персонажей тоже попали в результат"
+  - "COUNT(c.id) считает не-NULL значения — для домов без персонажей вернёт 0"
+  - "Синтаксис: SELECT h.name AS house_name, COUNT(c.id) AS character_count FROM houses h LEFT JOIN characters c ON c.house_id = h.id GROUP BY h.id, h.name ORDER BY character_count DESC, house_name ASC"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">COUNT(*) и GROUP BY</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">GROUP BY</code> разбивает строки на группы по уникальным значениям.
+    Агрегатные функции вычисляют одно значение для каждой группы.
+  </p>
+  <svg viewBox="0 0 420 160" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:420px;display:block;margin:0 0 12px">
+    <rect width="420" height="160" rx="6" fill="#1e1e2e"/>
+    <text x="16" y="18" fill="#cdd6f4" font-size="10" font-family="monospace">Все строки characters:</text>
+    <rect x="8" y="24" width="170" height="14" rx="2" fill="#313244"/>
+    <text x="14" y="35" fill="#89b4fa" font-size="9" font-family="monospace">Эддард Старк  house_id=1</text>
+    <rect x="8" y="40" width="170" height="14" rx="2" fill="#313244"/>
+    <text x="14" y="51" fill="#89b4fa" font-size="9" font-family="monospace">Кейтилин Старк house_id=1</text>
+    <rect x="8" y="56" width="170" height="14" rx="2" fill="#45475a"/>
+    <text x="14" y="67" fill="#a6e3a1" font-size="9" font-family="monospace">Тирион Ланнист. house_id=2</text>
+    <rect x="8" y="72" width="170" height="14" rx="2" fill="#45475a"/>
+    <text x="14" y="83" fill="#a6e3a1" font-size="9" font-family="monospace">Серсея Ланнист. house_id=2</text>
+    <rect x="8" y="88" width="170" height="14" rx="2" fill="#313244"/>
+    <text x="14" y="99" fill="#fab387" font-size="9" font-family="monospace">Арья Старк    house_id=1</text>
+    <text x="8" y="118" fill="#585b70" font-size="9" font-family="monospace">... ещё 20 строк ...</text>
+    <text x="188" y="76" fill="#89b4fa" font-size="20">→</text>
+    <text x="183" y="91" fill="#89b4fa" font-size="7" font-family="monospace" text-anchor="middle">GROUP BY</text>
+    <text x="183" y="102" fill="#89b4fa" font-size="7" font-family="monospace" text-anchor="middle">house_id</text>
+    <rect x="210" y="24" width="202" height="120" rx="4" fill="#1e1e2e" stroke="#45475a"/>
+    <text x="218" y="40" fill="#89b4fa" font-size="9" font-family="monospace">house_name       count</text>
+    <rect x="210" y="44" width="202" height="14" rx="2" fill="#313244"/>
+    <text x="218" y="55" fill="#a6e3a1" font-size="9" font-family="monospace">Дом Старков        5</text>
+    <rect x="210" y="60" width="202" height="14" rx="2" fill="#313244"/>
+    <text x="218" y="71" fill="#a6e3a1" font-size="9" font-family="monospace">Дом Баратеонов     4</text>
+    <rect x="210" y="76" width="202" height="14" rx="2" fill="#313244"/>
+    <text x="218" y="87" fill="#a6e3a1" font-size="9" font-family="monospace">Дом Ланнистеров    4</text>
+    <text x="311" y="120" text-anchor="middle" fill="#585b70" font-size="9">... ещё 7 домов ...</text>
+    <rect x="210" y="128" width="202" height="14" rx="2" fill="#313244"/>
+    <text x="218" y="139" fill="#a6e3a1" font-size="9" font-family="monospace">Дом Рейнов         0  ← LEFT JOIN</text>
+  </svg>
+  <table style="border-collapse:collapse;width:100%;font-family:monospace;font-size:12px;margin:0 0 12px">
+    <tr style="background:#45475a">
+      <th style="padding:5px 10px;color:#89b4fa;text-align:left">Функция</th>
+      <th style="padding:5px 10px;color:#89b4fa;text-align:left">COUNT(*)</th>
+      <th style="padding:5px 10px;color:#89b4fa;text-align:left">COUNT(col)</th>
+    </tr>
+    <tr style="background:#313244">
+      <td style="padding:4px 10px;color:#cdd6f4">Считает</td>
+      <td style="padding:4px 10px;color:#a6e3a1">все строки группы</td>
+      <td style="padding:4px 10px;color:#a6e3a1">только не-NULL значения</td>
+    </tr>
+    <tr style="background:#2a2a3e">
+      <td style="padding:4px 10px;color:#cdd6f4">NULL строки</td>
+      <td style="padding:4px 10px;color:#fab387">включает</td>
+      <td style="padding:4px 10px;color:#a6e3a1">исключает</td>
+    </tr>
+  </table>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Запомни:</strong>
+    <span style="color:#cdd6f4"> При LEFT JOIN используй <code>COUNT(c.id)</code>, а не <code>COUNT(*)</code> — иначе дома без персонажей покажут 1 вместо 0 (из-за NULL-строки от LEFT JOIN).</span>
+  </div>
