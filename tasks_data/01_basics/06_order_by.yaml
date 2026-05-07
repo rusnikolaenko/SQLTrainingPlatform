@@ -1,0 +1,98 @@
+id: 6
+topic: basics
+difficulty: 2
+title: "Рейтинг персонажей по возрасту"
+description: |
+  Используй таблицу characters.
+
+  Задача: выбери name и age всех персонажей,
+  отсортировав результат по убыванию возраста (от старшего к младшему).
+  Колонки результата: name, age.
+  Порядок строк важен.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'Старк',      'Зима близко',                         'Север',            true),
+      (2, 'Ланнистер',  'Слышишь мой рёв',                     'Запад',            true),
+      (3, 'Таргариен',  'Огонь и кровь',                       'Драконий Камень',  true),
+      (4, 'Баратеон',   'Наша — ярость',                       'Штормовые Земли',  true),
+      (5, 'Тирелл',     'Растём в силе',                       'Простор',          true),
+      (6, 'Мартелл',    'Несломленный, непогнутый, несогнувшийся', 'Дорн',         true),
+      (7, 'Аррен',      'Высоко, как честь',                   'Долина Аррен',     true),
+      (8, 'Болтон',     'Наш нож всегда острее',               'Север',            false);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд',            35, false),
+      (2,  'Джон Сноу',           1, 'Лорд',            17, true),
+      (3,  'Арья Старк',          1, 'Леди',            11, true),
+      (4,  'Санса Старк',         1, 'Леди',            14, true),
+      (5,  'Тирион Ланнистер',    2, 'Лорд',            32, true),
+      (6,  'Серсея Ланнистер',    2, 'Королева',        34, true),
+      (7,  'Джейме Ланнистер',    2, 'Сир',             36, true),
+      (8,  'Дейенерис Таргариен', 3, 'Королева',        16, true),
+      (9,  'Визерис Таргариен',   3, 'Принц',           22, false),
+      (10, 'Джоффри Баратеон',    4, 'Король',          13, false),
+      (11, 'Станнис Баратеон',    4, 'Лорд',            48, false),
+      (12, 'Маргери Тирелл',      5, 'Королева',        15, false),
+      (13, 'Оберин Мартелл',      6, 'Принц',           42, false),
+      (14, 'Лиза Аррен',          7, 'Леди',            33, false),
+      (15, 'Рамси Болтон',        8, 'Лорд',            25, false);
+solution: SELECT name, age FROM characters ORDER BY age DESC
+check:
+  ordered: true
+  columns_strict: true
+hints:
+  - "Для сортировки используй ORDER BY в конце запроса"
+  - "DESC означает убывание (от большего к меньшему)"
+  - "Синтаксис: SELECT name, age FROM characters ORDER BY age DESC"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">Сортировка ORDER BY</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">ORDER BY</code> сортирует строки результата.
+    Направление: <code style="color:#a6e3a1">ASC</code> — по возрастанию (умолчание),
+    <code style="color:#fab387">DESC</code> — по убыванию.
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">SELECT name, age FROM characters ORDER BY age DESC;</pre>
+  <svg viewBox="0 0 400 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="148" rx="6" fill="#1e1e2e"/>
+    <text x="92" y="20" text-anchor="middle" fill="#585b70" font-size="9" font-family="monospace">до ORDER BY (произвольный порядок)</text>
+    <rect x="8" y="26" width="175" height="14" fill="#313244" rx="2"/>
+    <text x="16" y="37" fill="#cdd6f4" font-size="9" font-family="monospace">Эддард Старк     35</text>
+    <rect x="8" y="42" width="175" height="14" fill="#313244" rx="2"/>
+    <text x="16" y="53" fill="#cdd6f4" font-size="9" font-family="monospace">Джон Сноу        17</text>
+    <rect x="8" y="58" width="175" height="14" fill="#313244" rx="2"/>
+    <text x="16" y="69" fill="#cdd6f4" font-size="9" font-family="monospace">Арья Старк       11</text>
+    <rect x="8" y="74" width="175" height="14" fill="#313244" rx="2"/>
+    <text x="16" y="85" fill="#cdd6f4" font-size="9" font-family="monospace">Тирион Ланнистер 32</text>
+    <text x="92" y="110" text-anchor="middle" fill="#585b70" font-size="9">... 15 строк в любом порядке</text>
+    <text x="196" y="76" fill="#89b4fa" font-size="22">→</text>
+    <text x="190" y="92" fill="#89b4fa" font-size="7.5" font-family="monospace" text-anchor="middle">ORDER BY</text>
+    <text x="190" y="103" fill="#fab387" font-size="7.5" font-family="monospace" text-anchor="middle">age DESC</text>
+    <text x="300" y="20" text-anchor="middle" fill="#a6e3a1" font-size="9" font-family="monospace">после — отсортировано ↓</text>
+    <rect x="214" y="26" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="222" y="37" fill="#a6e3a1" font-size="9" font-family="monospace">Станнис Баратеон 48 ← 1-й</text>
+    <rect x="214" y="42" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="222" y="53" fill="#a6e3a1" font-size="9" font-family="monospace">Оберин Мартелл   42</text>
+    <rect x="214" y="58" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="222" y="69" fill="#a6e3a1" font-size="9" font-family="monospace">Джейме Ланнистер 36</text>
+    <rect x="214" y="74" width="178" height="14" fill="#313244" rx="2" stroke="#a6e3a1" stroke-width="0.5"/>
+    <text x="222" y="85" fill="#a6e3a1" font-size="9" font-family="monospace">Эддард Старк     35</text>
+    <text x="300" y="110" text-anchor="middle" fill="#585b70" font-size="9">... Арья Старк 11 ← последняя</text>
+  </svg>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Запомни:</strong>
+    <span style="color:#cdd6f4"> Без ORDER BY PostgreSQL не гарантирует никакого порядка строк. Если порядок важен — всегда указывай ORDER BY явно.</span>
+  </div>

@@ -1,0 +1,109 @@
+﻿id: 2
+topic: basics
+difficulty: 1
+title: "РРјРµРЅР° Рё РґРµРІРёР·С‹ РґРѕРјРѕРІ"
+description: |
+  РСЃРїРѕР»СЊР·СѓР№ С‚Р°Р±Р»РёС†Сѓ houses.
+
+  РЎС‚СЂСѓРєС‚СѓСЂР° С‚Р°Р±Р»РёС†С‹:
+    id, name, words, region, is_great
+
+  Р—Р°РґР°С‡Р°: РІС‹Р±РµСЂРё С‚РѕР»СЊРєРѕ РєРѕР»РѕРЅРєРё name Рё words РёР· С‚Р°Р±Р»РёС†С‹ houses.
+  РџРѕСЂСЏРґРѕРє СЃС‚СЂРѕРє РЅРµ РІР°Р¶РµРЅ.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'РЎС‚Р°СЂРє',      'Р—РёРјР° Р±Р»РёР·РєРѕ',                         'РЎРµРІРµСЂ',            true),
+      (2, 'Р›Р°РЅРЅРёСЃС‚РµСЂ',  'РЎР»С‹С€РёС€СЊ РјРѕР№ СЂС‘РІ',                     'Р—Р°РїР°Рґ',            true),
+      (3, 'РўР°СЂРіР°СЂРёРµРЅ',  'РћРіРѕРЅСЊ Рё РєСЂРѕРІСЊ',                       'Р”СЂР°РєРѕРЅРёР№ РљР°РјРµРЅСЊ',  true),
+      (4, 'Р‘Р°СЂР°С‚РµРѕРЅ',   'РќР°С€Р° вЂ” СЏСЂРѕСЃС‚СЊ',                       'РЁС‚РѕСЂРјРѕРІС‹Рµ Р—РµРјР»Рё',  true),
+      (5, 'РўРёСЂРµР»Р»',     'Р Р°СЃС‚С‘Рј РІ СЃРёР»Рµ',                       'РџСЂРѕСЃС‚РѕСЂ',          true),
+      (6, 'РњР°СЂС‚РµР»Р»',    'РќРµСЃР»РѕРјР»РµРЅРЅС‹Р№, РЅРµРїРѕРіРЅСѓС‚С‹Р№, РЅРµСЃРѕРіРЅСѓРІС€РёР№СЃСЏ', 'Р”РѕСЂРЅ',         true),
+      (7, 'РђСЂСЂРµРЅ',      'Р’С‹СЃРѕРєРѕ, РєР°Рє С‡РµСЃС‚СЊ',                   'Р”РѕР»РёРЅР° РђСЂСЂРµРЅ',     true),
+      (8, 'Р‘РѕР»С‚РѕРЅ',     'РќР°С€ РЅРѕР¶ РІСЃРµРіРґР° РѕСЃС‚СЂРµРµ',               'РЎРµРІРµСЂ',            false);
+  INSERT INTO characters VALUES
+      (1,  'Р­РґРґР°СЂРґ РЎС‚Р°СЂРє',        1, 'Р›РѕСЂРґ',            35, false),
+      (2,  'Р”Р¶РѕРЅ РЎРЅРѕСѓ',           1, 'Р›РѕСЂРґ',            17, true),
+      (3,  'РђСЂСЊСЏ РЎС‚Р°СЂРє',          1, 'Р›РµРґРё',            11, true),
+      (4,  'РЎР°РЅСЃР° РЎС‚Р°СЂРє',         1, 'Р›РµРґРё',            14, true),
+      (5,  'РўРёСЂРёРѕРЅ Р›Р°РЅРЅРёСЃС‚РµСЂ',    2, 'Р›РѕСЂРґ',            32, true),
+      (6,  'РЎРµСЂСЃРµСЏ Р›Р°РЅРЅРёСЃС‚РµСЂ',    2, 'РљРѕСЂРѕР»РµРІР°',        34, true),
+      (7,  'Р”Р¶РµР№РјРµ Р›Р°РЅРЅРёСЃС‚РµСЂ',    2, 'РЎРёСЂ',             36, true),
+      (8,  'Р”РµР№РµРЅРµСЂРёСЃ РўР°СЂРіР°СЂРёРµРЅ', 3, 'РљРѕСЂРѕР»РµРІР°',        16, true),
+      (9,  'Р’РёР·РµСЂРёСЃ РўР°СЂРіР°СЂРёРµРЅ',   3, 'РџСЂРёРЅС†',           22, false),
+      (10, 'Р”Р¶РѕС„С„СЂРё Р‘Р°СЂР°С‚РµРѕРЅ',    4, 'РљРѕСЂРѕР»СЊ',          13, false),
+      (11, 'РЎС‚Р°РЅРЅРёСЃ Р‘Р°СЂР°С‚РµРѕРЅ',    4, 'Р›РѕСЂРґ',            48, false),
+      (12, 'РњР°СЂРіРµСЂРё РўРёСЂРµР»Р»',      5, 'РљРѕСЂРѕР»РµРІР°',        15, false),
+      (13, 'РћР±РµСЂРёРЅ РњР°СЂС‚РµР»Р»',      6, 'РџСЂРёРЅС†',           42, false),
+      (14, 'Р›РёР·Р° РђСЂСЂРµРЅ',          7, 'Р›РµРґРё',            33, false),
+      (15, 'Р Р°РјСЃРё Р‘РѕР»С‚РѕРЅ',        8, 'Р›РѕСЂРґ',            25, false);
+solution: SELECT name, words FROM houses
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Р’РјРµСЃС‚Рѕ * РїРµСЂРµС‡РёСЃР»Рё РЅСѓР¶РЅС‹Рµ РєРѕР»РѕРЅРєРё С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ"
+  - "РќСѓР¶РЅС‹ С‚РѕР»СЊРєРѕ РґРІРµ РєРѕР»РѕРЅРєРё: name Рё words"
+  - "РЎРёРЅС‚Р°РєСЃРёСЃ: SELECT name, words FROM houses"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">Р’С‹Р±РѕСЂ РєРѕРЅРєСЂРµС‚РЅС‹С… РєРѕР»РѕРЅРѕРє</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    Р’РјРµСЃС‚Рѕ <code style="color:#fab387">*</code> РјРѕР¶РЅРѕ РїРµСЂРµС‡РёСЃР»РёС‚СЊ РЅСѓР¶РЅС‹Рµ РєРѕР»РѕРЅРєРё С‡РµСЂРµР· Р·Р°РїСЏС‚СѓСЋ.
+    Р­С‚Рѕ РїРѕР·РІРѕР»СЏРµС‚ РїРѕР»СѓС‡РёС‚СЊ С‚РѕР»СЊРєРѕ РЅСѓР¶РЅС‹Рµ РґР°РЅРЅС‹Рµ.
+  </p>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">-- РІСЃРµ РєРѕР»РѕРЅРєРё (5 С€С‚СѓРє)
+  SELECT * FROM houses;
+
+  -- С‚РѕР»СЊРєРѕ name Рё words
+  SELECT name, words FROM houses;</pre>
+  <svg viewBox="0 0 400 148" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="148" rx="6" fill="#1e1e2e"/>
+    <rect x="8" y="8" width="178" height="132" rx="4" fill="#313244" stroke="#45475a" stroke-width="1"/>
+    <rect x="8" y="8" width="178" height="20" rx="4" fill="#45475a"/>
+    <text x="97" y="22" text-anchor="middle" fill="#89b4fa" font-size="10" font-family="monospace" font-weight="bold">houses вЂ” РІСЃРµ РєРѕР»РѕРЅРєРё</text>
+    <rect x="8" y="29" width="178" height="14" fill="#2a2a3e"/>
+    <text x="16" y="40" fill="#585b70" font-size="9" font-family="monospace">id</text>
+    <text x="31" y="40" fill="#a6e3a1" font-size="9" font-family="monospace">name</text>
+    <text x="76" y="40" fill="#a6e3a1" font-size="9" font-family="monospace">words</text>
+    <text x="138" y="40" fill="#585b70" font-size="9" font-family="monospace">region is_great</text>
+    <text x="16" y="56" fill="#585b70" font-size="9" font-family="monospace">1</text>
+    <text x="31" y="56" fill="#a6e3a1" font-size="9" font-family="monospace">РЎС‚Р°СЂРє</text>
+    <text x="76" y="56" fill="#a6e3a1" font-size="9" font-family="monospace">Р—РёРјР° Р±Р»РёР·РєРѕ</text>
+    <text x="16" y="70" fill="#585b70" font-size="9" font-family="monospace">2</text>
+    <text x="31" y="70" fill="#a6e3a1" font-size="9" font-family="monospace">Р›Р°РЅРЅРёСЃС‚РµСЂ</text>
+    <text x="76" y="70" fill="#a6e3a1" font-size="9" font-family="monospace">РЎР»С‹С€РёС€СЊ СЂС‘РІ</text>
+    <text x="16" y="84" fill="#585b70" font-size="9" font-family="monospace">3</text>
+    <text x="31" y="84" fill="#a6e3a1" font-size="9" font-family="monospace">РўР°СЂРіР°СЂРёРµРЅ</text>
+    <text x="76" y="84" fill="#a6e3a1" font-size="9" font-family="monospace">РћРіРѕРЅСЊ Рё РєСЂРѕРІСЊ</text>
+    <text x="97" y="118" text-anchor="middle" fill="#585b70" font-size="9">... РµС‰С‘ 5 СЃС‚СЂРѕРє ...</text>
+    <text x="196" y="76" fill="#89b4fa" font-size="22">в†’</text>
+    <text x="192" y="93" fill="#89b4fa" font-size="7.5" font-family="monospace" text-anchor="middle">SELECT name,words</text>
+    <rect x="214" y="8" width="178" height="132" rx="4" fill="#313244" stroke="#a6e3a1" stroke-width="1.5"/>
+    <rect x="214" y="8" width="178" height="20" rx="4" fill="#45475a"/>
+    <text x="303" y="22" text-anchor="middle" fill="#a6e3a1" font-size="10" font-family="monospace" font-weight="bold">СЂРµР·СѓР»СЊС‚Р°С‚ вЂ” 2 РєРѕР»РѕРЅРєРё</text>
+    <rect x="214" y="29" width="178" height="14" fill="#2a2a3e"/>
+    <text x="222" y="40" fill="#a6e3a1" font-size="9" font-family="monospace">name        words</text>
+    <text x="222" y="56" fill="#a6e3a1" font-size="9" font-family="monospace">РЎС‚Р°СЂРє       Р—РёРјР° Р±Р»РёР·РєРѕ</text>
+    <text x="222" y="70" fill="#a6e3a1" font-size="9" font-family="monospace">Р›Р°РЅРЅРёСЃС‚РµСЂ   РЎР»С‹С€РёС€СЊ СЂС‘РІ</text>
+    <text x="222" y="84" fill="#a6e3a1" font-size="9" font-family="monospace">РўР°СЂРіР°СЂРёРµРЅ   РћРіРѕРЅСЊ Рё РєСЂРѕРІСЊ</text>
+    <text x="303" y="118" text-anchor="middle" fill="#a6e3a1" font-size="9">8 СЃС‚СЂРѕРє Г— 2 РєРѕР»РѕРЅРєРё</text>
+  </svg>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Р—Р°РїРѕРјРЅРё:</strong>
+    <span style="color:#cdd6f4"> РџРѕСЂСЏРґРѕРє РєРѕР»РѕРЅРѕРє РІ SELECT Р·Р°РґР°С‘С‚ РїРѕСЂСЏРґРѕРє РєРѕР»РѕРЅРѕРє РІ СЂРµР·СѓР»СЊС‚Р°С‚Рµ. <code>SELECT words, name</code> Рё <code>SELECT name, words</code> вЂ” СЂР°Р·РЅС‹Рµ СЂРµР·СѓР»СЊС‚Р°С‚С‹.</span>
+  </div>
+

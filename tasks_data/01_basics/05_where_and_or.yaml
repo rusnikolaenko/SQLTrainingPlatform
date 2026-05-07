@@ -1,0 +1,115 @@
+id: 5
+topic: basics
+difficulty: 2
+title: "Живые лорды Вестероса"
+description: |
+  Используй таблицу characters.
+
+  Задача: выбери name и title всех персонажей,
+  у которых is_alive = true И title = 'Лорд'.
+  Оба условия должны выполняться одновременно.
+  Порядок строк не важен.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      words TEXT,
+      region TEXT,
+      is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT,
+      house_id INTEGER REFERENCES houses(id),
+      title TEXT,
+      age INTEGER,
+      is_alive BOOLEAN
+  );
+  INSERT INTO houses VALUES
+      (1, 'Старк',      'Зима близко',                         'Север',            true),
+      (2, 'Ланнистер',  'Слышишь мой рёв',                     'Запад',            true),
+      (3, 'Таргариен',  'Огонь и кровь',                       'Драконий Камень',  true),
+      (4, 'Баратеон',   'Наша — ярость',                       'Штормовые Земли',  true),
+      (5, 'Тирелл',     'Растём в силе',                       'Простор',          true),
+      (6, 'Мартелл',    'Несломленный, непогнутый, несогнувшийся', 'Дорн',         true),
+      (7, 'Аррен',      'Высоко, как честь',                   'Долина Аррен',     true),
+      (8, 'Болтон',     'Наш нож всегда острее',               'Север',            false);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд',            35, false),
+      (2,  'Джон Сноу',           1, 'Лорд',            17, true),
+      (3,  'Арья Старк',          1, 'Леди',            11, true),
+      (4,  'Санса Старк',         1, 'Леди',            14, true),
+      (5,  'Тирион Ланнистер',    2, 'Лорд',            32, true),
+      (6,  'Серсея Ланнистер',    2, 'Королева',        34, true),
+      (7,  'Джейме Ланнистер',    2, 'Сир',             36, true),
+      (8,  'Дейенерис Таргариен', 3, 'Королева',        16, true),
+      (9,  'Визерис Таргариен',   3, 'Принц',           22, false),
+      (10, 'Джоффри Баратеон',    4, 'Король',          13, false),
+      (11, 'Станнис Баратеон',    4, 'Лорд',            48, false),
+      (12, 'Маргери Тирелл',      5, 'Королева',        15, false),
+      (13, 'Оберин Мартелл',      6, 'Принц',           42, false),
+      (14, 'Лиза Аррен',          7, 'Леди',            33, false),
+      (15, 'Рамси Болтон',        8, 'Лорд',            25, false);
+solution: SELECT name, title FROM characters WHERE is_alive = true AND title = 'Лорд'
+check:
+  ordered: false
+  columns_strict: true
+hints:
+  - "Нужно проверить два условия одновременно — используй AND"
+  - "Текстовые значения пишутся в одинарных кавычках: 'Лорд'"
+  - "Синтаксис: WHERE is_alive = true AND title = 'Лорд'"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">Логические операторы AND и OR</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">AND</code> — строка проходит, только если <strong>оба</strong> условия истинны.<br>
+    <code style="color:#fab387">OR</code> — строка проходит, если <strong>хотя бы одно</strong> условие истинно.
+  </p>
+  <table style="border-collapse:collapse;margin:0 0 12px;font-family:monospace;font-size:12px;width:100%">
+    <tr style="background:#45475a">
+      <th style="padding:5px 10px;color:#89b4fa">is_alive</th>
+      <th style="padding:5px 10px;color:#89b4fa">title='Лорд'</th>
+      <th style="padding:5px 10px;color:#a6e3a1">AND</th>
+      <th style="padding:5px 10px;color:#fab387">OR</th>
+    </tr>
+    <tr style="background:#313244;text-align:center">
+      <td style="padding:4px 10px;color:#a6e3a1">true</td>
+      <td style="padding:4px 10px;color:#a6e3a1">true</td>
+      <td style="padding:4px 10px;color:#a6e3a1">✓ true</td>
+      <td style="padding:4px 10px;color:#a6e3a1">✓ true</td>
+    </tr>
+    <tr style="background:#2a2a3e;text-align:center">
+      <td style="padding:4px 10px;color:#a6e3a1">true</td>
+      <td style="padding:4px 10px;color:#f38ba8">false</td>
+      <td style="padding:4px 10px;color:#f38ba8">✗ false</td>
+      <td style="padding:4px 10px;color:#a6e3a1">✓ true</td>
+    </tr>
+    <tr style="background:#313244;text-align:center">
+      <td style="padding:4px 10px;color:#f38ba8">false</td>
+      <td style="padding:4px 10px;color:#a6e3a1">true</td>
+      <td style="padding:4px 10px;color:#f38ba8">✗ false</td>
+      <td style="padding:4px 10px;color:#a6e3a1">✓ true</td>
+    </tr>
+    <tr style="background:#2a2a3e;text-align:center">
+      <td style="padding:4px 10px;color:#f38ba8">false</td>
+      <td style="padding:4px 10px;color:#f38ba8">false</td>
+      <td style="padding:4px 10px;color:#f38ba8">✗ false</td>
+      <td style="padding:4px 10px;color:#f38ba8">✗ false</td>
+    </tr>
+  </table>
+  <svg viewBox="0 0 400 110" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 0 12px">
+    <rect width="400" height="110" rx="6" fill="#1e1e2e"/>
+    <ellipse cx="155" cy="58" rx="110" ry="42" fill="#89b4fa" opacity="0.18" stroke="#89b4fa" stroke-width="1.2"/>
+    <ellipse cx="245" cy="58" rx="110" ry="42" fill="#a6e3a1" opacity="0.18" stroke="#a6e3a1" stroke-width="1.2"/>
+    <text x="100" y="52" text-anchor="middle" fill="#89b4fa" font-size="9" font-family="monospace">is_alive</text>
+    <text x="100" y="64" text-anchor="middle" fill="#89b4fa" font-size="9" font-family="monospace">= true</text>
+    <text x="300" y="52" text-anchor="middle" fill="#a6e3a1" font-size="9" font-family="monospace">title</text>
+    <text x="300" y="64" text-anchor="middle" fill="#a6e3a1" font-size="9" font-family="monospace">= 'Лорд'</text>
+    <text x="200" y="52" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">AND</text>
+    <text x="200" y="64" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">Джон Сноу</text>
+    <text x="200" y="75" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">Тирион</text>
+    <text x="200" y="100" text-anchor="middle" fill="#585b70" font-size="8">пересечение = оба условия одновременно</text>
+  </svg>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Запомни:</strong>
+    <span style="color:#cdd6f4"> При смешивании AND и OR используй скобки: <code>WHERE (a OR b) AND c</code>. Без скобок AND имеет больший приоритет, чем OR.</span>
+  </div>
