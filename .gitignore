@@ -11,5 +11,3 @@ htmlcov/
 .env
 backend/.env
 *.log
-CLAUDE.md
-.claude/
