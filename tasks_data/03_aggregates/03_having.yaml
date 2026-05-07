@@ -1,0 +1,152 @@
+id: 19
+topic: aggregates
+difficulty: 3
+title: "Дома с более чем 3 персонажами"
+description: |
+  Используй таблицы houses и characters.
+
+  Задача: выбери только те дома, в которых насчитывается
+  более 3 персонажей. Выведи название дома и число персонажей.
+  Отсортируй по убыванию числа персонажей, затем по названию дома по возрастанию.
+  Колонки результата: house_name, character_count.
+schema_setup: |
+  CREATE TABLE houses (
+      id INTEGER PRIMARY KEY,
+      name TEXT, words TEXT, region TEXT, is_great BOOLEAN
+  );
+  CREATE TABLE characters (
+      id INTEGER PRIMARY KEY,
+      name TEXT, house_id INTEGER REFERENCES houses(id),
+      title TEXT, age INTEGER, is_alive BOOLEAN
+  );
+  CREATE TABLE battles (
+      id INTEGER PRIMARY KEY,
+      name TEXT, year INTEGER,
+      attacker_house_id INTEGER REFERENCES houses(id),
+      defender_house_id INTEGER REFERENCES houses(id),
+      winner_house_id  INTEGER REFERENCES houses(id),
+      location TEXT
+  );
+  CREATE TABLE marriages (
+      id INTEGER PRIMARY KEY,
+      character1_id INTEGER REFERENCES characters(id),
+      character2_id INTEGER REFERENCES characters(id),
+      year INTEGER, location TEXT
+  );
+  INSERT INTO houses VALUES
+      (1,  'Дом Старков',     'Зима близко',                             'Север',            TRUE),
+      (2,  'Дом Ланнистеров', 'Услышь мой рёв',                          'Западные земли',   TRUE),
+      (3,  'Дом Таргариенов', 'Пламя и кровь',                           'Драконий Камень',  TRUE),
+      (4,  'Дом Баратеонов',  'Нам ярость',                              'Штормовые земли',  TRUE),
+      (5,  'Дом Грейджоев',   'Мы не сеем',                              'Железные острова', TRUE),
+      (6,  'Дом Тиреллов',    'Вырастая — крепнем',                      'Простор',          TRUE),
+      (7,  'Дом Мартеллов',   'Непокорённые, несгибаемые, несломленные', 'Дорн',             TRUE),
+      (8,  'Дом Талли',       'Семья, долг, честь',                      'Речные земли',     TRUE),
+      (9,  'Дом Болтонов',    'Наши клинки остры',                       'Север',            FALSE),
+      (10, 'Дом Рейнов',      'Долгая и острая память',                  'Западные земли',   FALSE);
+  INSERT INTO characters VALUES
+      (1,  'Эддард Старк',        1, 'Лорд Винтерфелла',        35, FALSE),
+      (2,  'Кейтилин Старк',      1, 'Леди Винтерфелла',        34, FALSE),
+      (3,  'Робб Старк',          1, 'Король Севера',            16, FALSE),
+      (4,  'Санса Старк',         1, 'Леди Винтерфелла',        13, TRUE),
+      (5,  'Арья Старк',          1, NULL,                       11, TRUE),
+      (6,  'Тирион Ланнистер',    2, 'Десница королевы',        24, TRUE),
+      (7,  'Серсея Ланнистер',    2, 'Королева',                34, FALSE),
+      (8,  'Джейме Ланнистер',    2, 'Лорд-командующий',        32, TRUE),
+      (9,  'Тайвин Ланнистер',    2, 'Лорд Утёса Кастерли',    58, FALSE),
+      (10, 'Дейенерис Таргариен', 3, 'Королева Миэрина',        16, TRUE),
+      (11, 'Визерис Таргариен',   3, 'Принц',                   22, FALSE),
+      (12, 'Роберт Баратеон',     4, 'Король',                  36, FALSE),
+      (13, 'Станнис Баратеон',    4, 'Лорд Драконьего Камня',   34, FALSE),
+      (14, 'Ренли Баратеон',      4, 'Лорд Штормового Предела', 21, FALSE),
+      (15, 'Джоффри Баратеон',    4, 'Король',                  13, FALSE),
+      (16, 'Теон Грейджой',       5, 'Наследник Пайка',         19, TRUE),
+      (17, 'Маргери Тирелл',      6, 'Королева',                16, FALSE),
+      (18, 'Оленна Тирелл',       6, 'Леди Хайгардена',         70, FALSE),
+      (19, 'Оберин Мартелл',      7, 'Принц Дорна',             42, FALSE),
+      (20, 'Эллария Сэнд',        7, NULL,                       35, TRUE),
+      (21, 'Эдмар Талли',         8, 'Лорд Риверрана',          30, TRUE),
+      (22, 'Русе Болтон',         9, 'Лорд Дредфорта',          45, FALSE),
+      (23, 'Рамси Болтон',        9, 'Лорд Винтерфелла',        20, FALSE),
+      (24, 'Бронн',            NULL, 'Наёмник',                  30, TRUE),
+      (25, 'Кхал Дрого',       NULL, 'Кхал',                     30, FALSE);
+  INSERT INTO battles VALUES
+      (1,  'Битва в Шепчущем лесу',        299, 1, 2, 1, 'Речные земли'),
+      (2,  'Битва у Черноводной',           299, 4, 2, 2, 'Королевская Гавань'),
+      (3,  'Захват Винтерфелла',            299, 9, 1, 9, 'Винтерфелл'),
+      (4,  'Битва при Окскроссе',           299, 1, 2, 1, 'Западные земли'),
+      (5,  'Осада Риверрана',               300, 2, 8, 2, 'Риверран'),
+      (6,  'Битва бастардов',               303, 1, 9, 1, 'Винтерфелл'),
+      (7,  'Нападение на обоз Ланнистеров', 304, 3, 2, 3, 'Простор'),
+      (8,  'Восстание Грейджоя',            289, 5, 4, 4, 'Пайк'),
+      (9,  'Битва на Зелёном Зубце',        298, 2, 1, 2, 'Речные земли'),
+      (10, 'Падение Хайгардена',            304, 2, 6, 2, 'Хайгарден');
+  INSERT INTO marriages VALUES
+      (1, 1,  2,  282, 'Риверран'),
+      (2, 6,  4,  299, 'Королевская Гавань'),
+      (3, 12, 7,  284, 'Королевская Гавань'),
+      (4, 17, 14, 298, 'Штормовой Предел'),
+      (5, 17, 15, 300, 'Королевская Гавань'),
+      (6, 4,  23, 302, 'Винтерфелл'),
+      (7, 10, 25, 298, 'Дотракийское море'),
+      (8, 19, 20, 295, 'Солнечное Копьё');
+solution: |
+  SELECT h.name AS house_name, COUNT(c.id) AS character_count
+  FROM houses h
+  JOIN characters c ON c.house_id = h.id
+  GROUP BY h.id, h.name
+  HAVING COUNT(c.id) > 3
+  ORDER BY character_count DESC, house_name ASC
+check:
+  ordered: true
+  columns_strict: true
+hints:
+  - "WHERE нельзя использовать с агрегатными функциями — для этого есть HAVING"
+  - "HAVING применяется ПОСЛЕ группировки: HAVING COUNT(c.id) > 3"
+  - "Синтаксис: GROUP BY h.id, h.name HAVING COUNT(c.id) > 3 ORDER BY character_count DESC, house_name ASC"
+theory: |
+  <h3 style="color:#89b4fa;margin:0 0 8px">WHERE vs HAVING — порядок выполнения</h3>
+  <p style="color:#cdd6f4;margin:0 0 10px">
+    <code style="color:#a6e3a1">WHERE</code> фильтрует <strong>строки до группировки</strong>.
+    <code style="color:#a6e3a1">HAVING</code> фильтрует <strong>группы после группировки</strong>.
+  </p>
+  <svg viewBox="0 0 420 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:420px;display:block;margin:0 0 12px">
+    <rect width="420" height="180" rx="6" fill="#1e1e2e"/>
+    <rect x="8" y="8" width="80" height="164" rx="4" fill="#313244" stroke="#45475a"/>
+    <text x="48" y="26" text-anchor="middle" fill="#cdd6f4" font-size="9" font-family="monospace">FROM</text>
+    <text x="48" y="42" text-anchor="middle" fill="#585b70" font-size="8" font-family="monospace">25 строк</text>
+    <text x="48" y="100" text-anchor="middle" fill="#585b70" font-size="20">⋮</text>
+    <path d="M88 90 L108 90" stroke="#f38ba8" stroke-width="1.5" marker-end="url(#ra)"/>
+    <rect x="108" y="60" width="76" height="60" rx="4" fill="#3a2020" stroke="#f38ba8"/>
+    <text x="146" y="82" text-anchor="middle" fill="#f38ba8" font-size="9" font-family="monospace">WHERE</text>
+    <text x="146" y="96" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">фильтр строк</text>
+    <text x="146" y="110" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">ДО группировки</text>
+    <path d="M184 90 L204 90" stroke="#45475a" stroke-width="1.5" marker-end="url(#ra)"/>
+    <rect x="204" y="60" width="72" height="60" rx="4" fill="#2a3a2a" stroke="#a6e3a1"/>
+    <text x="240" y="82" text-anchor="middle" fill="#a6e3a1" font-size="9" font-family="monospace">GROUP BY</text>
+    <text x="240" y="96" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">группировка</text>
+    <text x="240" y="110" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">строк</text>
+    <path d="M276 90 L296 90" stroke="#45475a" stroke-width="1.5" marker-end="url(#ra)"/>
+    <rect x="296" y="60" width="76" height="60" rx="4" fill="#20203a" stroke="#89b4fa"/>
+    <text x="334" y="82" text-anchor="middle" fill="#89b4fa" font-size="9" font-family="monospace">HAVING</text>
+    <text x="334" y="96" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">фильтр групп</text>
+    <text x="334" y="110" text-anchor="middle" fill="#cdd6f4" font-size="8" font-family="monospace">ПОСЛЕ группировки</text>
+    <text x="146" y="148" text-anchor="middle" fill="#f38ba8" font-size="9" font-family="monospace">WHERE age > 18 ✓</text>
+    <text x="334" y="148" text-anchor="middle" fill="#89b4fa" font-size="9" font-family="monospace">HAVING COUNT(*) > 3 ✓</text>
+    <text x="146" y="162" text-anchor="middle" fill="#f38ba8" font-size="9" font-family="monospace">WHERE COUNT(*) > 3 ✗</text>
+    <text x="334" y="162" text-anchor="middle" fill="#585b70" font-size="9" font-family="monospace">HAVING age > 18 ✗</text>
+    <defs><marker id="ra" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#45475a"/></marker></defs>
+  </svg>
+  <pre style="background:#1e1e2e;padding:10px;border-radius:6px;color:#a6e3a1;font-size:13px;margin:0 0 12px;overflow-x:auto">-- Правильно: HAVING для условия на агрегат
+  SELECT h.name AS house_name, COUNT(c.id) AS character_count
+  FROM houses h JOIN characters c ON c.house_id = h.id
+  GROUP BY h.id, h.name
+  HAVING COUNT(c.id) > 3
+  ORDER BY character_count DESC, house_name ASC;
+
+  -- Ошибка: WHERE не знает о COUNT до группировки
+  -- WHERE COUNT(c.id) > 3  ← синтаксическая ошибка!</pre>
+  <div style="border-left:3px solid #89b4fa;padding:8px 12px;background:#1e1e2e;border-radius:0 4px 4px 0">
+    <strong style="color:#89b4fa">Правило:</strong>
+    <span style="color:#cdd6f4"> Условие на обычные колонки → <code>WHERE</code>. Условие на результат агрегатной функции → <code>HAVING</code>. Оба оператора можно использовать вместе в одном запросе.</span>
+  </div>
